@@ -23,7 +23,8 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	RunCronJob()
+	// start a new routine
+	go RunCronJob()
 	s.ListenAndServe()
 
 }

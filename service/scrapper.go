@@ -45,13 +45,23 @@ func ScrapNews() {
 		log.Fatalf("Read dom contents from reader failed:%v", err)
 	}
 
+	var newsList []models.News
+
 	articleList := contentsDom.Find("ul.list").First().Children()
 	articleList.Each(func(_ int, s *goquery.Selection) {
 		url, _ := s.Find("a").Attr("href")
 		title := s.Find("p").Text()
 		news := models.News{Title: title, Link: url}
-		models.InsertNews(&news)
+		newsList = append(newsList, news)
 	})
+
+	// reverse news list
+	for i, j := 0, len(newsList)-1; i < j; i, j = i+1, j-1 {
+		newsList[i], newsList[j] = newsList[j], newsList[i]
+	}
+	for _, news := range newsList {
+		models.InsertNews(&news)
+	}
 
 	time.Sleep(1 * time.Second)
 }

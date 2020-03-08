@@ -1,6 +1,8 @@
 package models
 
-import "log"
+import (
+	"log"
+)
 
 type News struct {
 	ID    int    `gorm: "primary_key", json: "id"`
@@ -16,10 +18,14 @@ func GetNews(number int) (*[]News, error) {
 }
 
 func InsertNews(news *News) {
-	db.NewRecord(news)
-	db.Create(&news)
-	err := db.Save(&news).Error
-	if err != nil {
-		log.Fatalf("failed insert patient: %v", err)
+	var existNews News
+	notExist := db.Find(&existNews, "title = ?", news.Title).RecordNotFound()
+	if notExist {
+		db.NewRecord(news)
+		db.Create(&news)
+		err := db.Save(&news).Error
+		if err != nil {
+			log.Fatalf("failed insert patient: %v", err)
+		}
 	}
 }

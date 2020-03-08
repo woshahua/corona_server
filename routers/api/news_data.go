@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/woshahua/corona_server/models"
@@ -10,8 +11,13 @@ import (
 )
 
 func GetNewsData(c *gin.Context) {
-	data, err := models.GetNews(5)
 	code := e.SUCCESS
+
+	num, err := strconv.Atoi(c.Query("number"))
+	if err != nil {
+		fmt.Print("convert string to int failed", err)
+	}
+	data, err := models.GetNews(num)
 	if err != nil {
 		fmt.Print("failed fetch news from db", err)
 	}
