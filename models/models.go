@@ -48,11 +48,6 @@ func init() {
 		panic("failed to connect database")
 	}
 
-	err = db.DB().Ping()
-	if err != nil {
-		log.Println(err)
-	}
-
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return tablePrefix + defaultTableName
 	}
@@ -61,6 +56,7 @@ func init() {
 	db.LogMode(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
+	db.AutoMigrate(&News{}, &Japanese{})
 }
 
 func CloseDB() {
