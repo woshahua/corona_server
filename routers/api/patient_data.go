@@ -53,5 +53,20 @@ func GetJapanesePatientByLocation(c *gin.Context) {
 		"msg":  e.GetMsg(code),
 		"data": data,
 	})
+}
 
+func GetJapanesePatientSummary(c *gin.Context) {
+	data, err := models.GetJapanesePatientSummary()
+
+	code := e.SUCCESS
+	if err != nil {
+		code = e.ERROR
+		fmt.Println("failed fetch patient summary: ", err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
+	})
 }

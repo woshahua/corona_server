@@ -14,10 +14,9 @@ func InitRouter() *gin.Engine {
 
 	apiv1 := r.Group("api")
 	{
-		apiv1.GET("/patient/japanese/all", api.GetJapanesePatient)
-		apiv1.GET("/patient/japanese/new", api.GetJapaneseDailyNewPatient)
 		apiv1.GET("/patient/japanese/location", api.GetJapanesePatientByLocation)
 		apiv1.GET("/patient/news", api.GetNewsData)
+		apiv1.GET("/patient/japanese/summary", api.GetJapanesePatientSummary)
 	}
 	return r
 }

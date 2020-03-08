@@ -61,7 +61,7 @@ func RunCronJob() {
 	scheduler.Every(5).Hours().Run(fetchJapnesePatientCSV)
 
 	// insert csv data to database evenry 6 hours
-	scheduler.Every(6).Hours().NotImmediately().Run(importCSVDataToDB)
+	scheduler.Every(6).Hours().Run(importCSVDataToDB)
 
 	// scrap news data and import to database
 	scheduler.Every(15).Minutes().Run(scrapNewsData)
