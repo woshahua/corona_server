@@ -35,7 +35,7 @@ func RunCronJob() {
 	fetchJapnesePatientCSV := func() {
 		log.Println("Run service.Import")
 		filePath := "staticFile/data.csv"
-		url := "https://toyokeizai.net/sp/visual/tko/covid19/csv/data.csv"
+		url := "https://docs.google.com/spreadsheets/d/1jfB4muWkzKTR0daklmf8D5F0Uf_IYAgcx_-Ij9McClQ/export?format=csv&gid=1399411442"
 		err := service.DownLoadFile(filePath, url)
 
 		if err != nil {

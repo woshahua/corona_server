@@ -1,89 +1,107 @@
 package models
 
 import (
-	"log"
 	"sort"
 )
 
-type Patient struct {
-	ID              int    `gorm: "primary_key", json: "id"`
-	Date            string `json: "date", gorm: "date"`
-	Age             string `json: "age", gorm: "age"`
-	PatientLocation string `json: "patient_location"`
-}
-
-type Japanese struct {
-	Patient
-}
-
 type PatientLocation struct {
-	Location   string
-	PatientSum int
+	ID       int    `gorm: "primary_key", json: "id"`
+	Sum      string `json: "sum"`
+	Location string `json: "patient_location"`
 }
 
-func GetJapanesePatient() (*[]Japanese, error) {
-	var patient []Japanese
-	err := db.Find(&patient).Error
-
-	// sort by patients by date
-	sort.SliceStable(patient, func(i, j int) bool {
-		return patient[i].ID < patient[j].ID
-	})
-
-	return &patient, err
+type PatientByDate struct {
+	ID        int    `gorm: "primary_key", json: "id"`
+	Date      string `json: "date"`
+	Confirmed int    `json: "confirmed`
+	Recovered int    `json: "recovered`
+	Dead      int    `json: "dead`
+	Critical  int    `json: "critical`
+	Tested    int    `json: "tested"`
 }
 
-func GetJapaneseDailyNewPatient() (*[]Japanese, error) {
-	var patient []Japanese
-	err := db.Find(&patient).Error
-	length := len(patient)
+type DailyPatient struct {
+	Date    string
+	Current int
+	Diff    int
+}
 
-	sort.SliceStable(patient, func(i, j int) bool {
-		return patient[i].ID < patient[j].ID
+type CurrentPatient struct {
+	Date    string
+	Current int
+	Diff    int
+}
+
+type DeadPatient struct {
+	Date    string
+	Current int
+	Diff    int
+}
+
+func GetLocationPatientData() (*[]PatientLocation, error) {
+	var location []PatientLocation
+	err := db.Find(&location).Error
+
+	sort.SliceStable(location, func(i, j int) bool {
+		return location[i].Sum < location[j].Sum
 	})
 
-	curDate := patient[length-1].Date
-	var newPatient []Japanese
-	for _, person := range patient {
-		if person.Date == curDate {
-			newPatient = append(newPatient, person)
-		}
-	}
+	return &location, err
+}
 
-	return &newPatient, err
+func GetDailyPatientData() (*DailyPatient, error) {
+	var patient []PatientByDate
+	err := db.Order("date desc").Limit(3).Find(&patient).Error
+
+	var dailyPatient = DailyPatient{}
+	dailyPatient.Date = patient[0].Date
+	dailyPatient.Current = patient[0].Confirmed - patient[1].Confirmed
+	dailyPatient.Diff = dailyPatient.Current - (patient[1].Confirmed - patient[2].Confirmed)
+
+	return &dailyPatient, err
+}
+
+func GetDeadPatient() (*DeadPatient, error) {
+	var patient []PatientByDate
+	err := db.Order("date desc").Limit(2).Find(&patient).Error
+
+	var deadPatient = DeadPatient{}
+	deadPatient.Date = patient[0].Date
+	deadPatient.Current = patient[0].Dead
+	deadPatient.Diff = patient[0].Dead - patient[1].Dead
+
+	return &deadPatient, err
+}
+
+func GetCurrentPatient() (*CurrentPatient, error) {
+	var patient []PatientByDate
+	err := db.Order("date desc").Limit(2).Find(&patient).Error
+
+	var currentPatient = CurrentPatient{}
+	currentPatient.Date = patient[0].Date
+	currentPatient.Current = patient[0].Confirmed
+	currentPatient.Diff = patient[0].Confirmed - patient[1].Confirmed
+
+	return &currentPatient, err
 }
 
 func GetJapanesePatientByLoaction() (*[]PatientLocation, error) {
-	var patient []Japanese
-	var patientLocationList []PatientLocation
-	err := db.Find(&patient).Error
+	var locationList []PatientLocation
+	err := db.Find(&locationList).Error
 
-	m := make(map[string]int)
-	for _, person := range patient {
-		if val, ok := m[person.PatientLocation]; ok {
-			m[person.PatientLocation] = val + 1
-		} else {
-			m[person.PatientLocation] = 1
-		}
-	}
-
-	for key, value := range m {
-		patientLoc := PatientLocation{Location: key, PatientSum: value}
-		patientLocationList = append(patientLocationList, patientLoc)
-	}
-
-	sort.SliceStable(patientLocationList, func(i, j int) bool {
-		return patientLocationList[i].PatientSum > patientLocationList[j].PatientSum
-	})
-
-	return &patientLocationList, err
+	return &locationList, err
 }
 
-func InsertJapanesePatient(person *Japanese) {
+func InsertPatientByDate(person *PatientByDate) error {
 	db.NewRecord(person)
 	db.Create(&person)
 	err := db.Save(&person).Error
-	if err != nil {
-		log.Fatalf("failed insert patient: %v", err)
-	}
+	return err
+}
+
+func UpdatePatientByLocation(location *PatientLocation) error {
+	db.NewRecord(location)
+	db.Create(&location)
+	err := db.Save(&location).Error
+	return err
 }

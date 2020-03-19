@@ -21,7 +21,7 @@ func Import() error {
 	lines, err := csv.NewReader(f).ReadAll()
 	for i, line := range lines {
 		if i > 0 {
-			patient := models.Japanese{Patient: models.Patient{ID: i, Date: line[2], Age: line[3], PatientLocation: line[5]}}
+			patient := models.Japanese{Patient: models.Patient{ID: i, Date: line[], Age: line[3], PatientLocation: line[5]}}
 			models.InsertJapanesePatient(&patient)
 		}
 	}
