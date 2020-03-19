@@ -9,23 +9,23 @@ import (
 	"github.com/woshahua/corona_server/pkg/e"
 )
 
-func GetJapanesePatient(c *gin.Context) {
-	data, err := models.GetJapanesePatient()
+func GetDailyPatient(c *gin.Context) {
+	data, err := models.GetDailyPatientData()
 	code := e.SUCCESS
 	if err != nil {
+		code = e.ERROR
 		fmt.Print("failed ", err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":           code,
-		"msg":            e.GetMsg(code),
-		"data":           data,
-		"patient_number": len(*data),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
 	})
 }
 
-func GetJapaneseDailyNewPatient(c *gin.Context) {
-	data, err := models.GetJapaneseDailyNewPatient()
+func GetDeadPatient(c *gin.Context) {
+	data, err := models.GetDeadPatient()
 	code := e.SUCCESS
 	if err != nil {
 		code = e.ERROR
@@ -33,15 +33,14 @@ func GetJapaneseDailyNewPatient(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":           code,
-		"msg":            e.GetMsg(code),
-		"data":           data,
-		"patient_number": len(*data),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
 	})
 }
 
-func GetJapanesePatientByLocation(c *gin.Context) {
-	data, err := models.GetJapanesePatientByLoaction()
+func GetPatientByLocation(c *gin.Context) {
+	data, err := models.GetLocationPatientData()
 	code := e.SUCCESS
 	if err != nil {
 		code = e.ERROR

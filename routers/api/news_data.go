@@ -15,10 +15,12 @@ func GetNewsData(c *gin.Context) {
 
 	num, err := strconv.Atoi(c.Query("number"))
 	if err != nil {
+		code = e.ERROR
 		fmt.Print("convert string to int failed", err)
 	}
 	data, err := models.GetNews(num)
 	if err != nil {
+		code = e.ERROR
 		fmt.Print("failed fetch news from db", err)
 	}
 

@@ -2,10 +2,12 @@ package models
 
 import (
 	"log"
+
+	"github.com/jinzhu/gorm"
 )
 
 type News struct {
-	ID    int    `gorm: "primary_key", json: "id"`
+	gorm.Model
 	Title string `json: "title", gorm: "date"`
 	Link  string `json: "link", gorm: "age"`
 }
