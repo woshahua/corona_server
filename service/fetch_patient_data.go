@@ -5,12 +5,13 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/woshahua/corona_server/models"
 )
 
 func Import() error {
-	csvPath := "staticFile/data.csv"
+	csvPath := "staticFile/patientByDate.csv"
 	f, err := os.Open(csvPath)
 	defer f.Close()
 
@@ -21,8 +22,32 @@ func Import() error {
 	lines, err := csv.NewReader(f).ReadAll()
 	for i, line := range lines {
 		if i > 0 {
-			patient := models.Japanese{Patient: models.Patient{ID: i, Date: line[], Age: line[3], PatientLocation: line[5]}}
-			models.InsertJapanesePatient(&patient)
+			patient := models.PatientByDate{
+				Date:      line[0],
+				Confirmed: strconv.Atoi(line[1]),
+				Recoverd:  strconv.Atoi(line[2]),
+				Dead:      strconv.Atoi(line[3]),
+				Critical:  strconv.Atoi(line[4]),
+				Tested:    strconv.Atoi(line[5])
+			}
+
+			models.InsertPatientByDate(&patient)
+		}
+	}
+
+	csvPath := "staticFile/patientByLocation.csv"
+	f, err := os.Open(csvPath)
+	defer f.Close()
+
+	if err != nil {
+		return err
+	}
+
+	lines, err := csv.NewReader(f).ReadAll()
+	for i, line := range lines {
+		if i > 1 {
+			location := models.PatientLocation{ Sum: strconv.Atoi(line[1]), Location: line[2]}
+			models.UpdatePatientByLocation(&location)
 		}
 	}
 

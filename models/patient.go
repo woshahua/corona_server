@@ -61,7 +61,7 @@ func GetDailyPatientData() (*DailyPatient, error) {
 	return &dailyPatient, err
 }
 
-func GetDeadPatient() (*DeadPatient, error) {
+func GetDeadPatientData() (*DeadPatient, error) {
 	var patient []PatientByDate
 	err := db.Order("date desc").Limit(2).Find(&patient).Error
 

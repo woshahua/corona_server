@@ -53,9 +53,9 @@ func init() {
 		log.Println(err)
 	}
 
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return tablePrefix + defaultTableName
-	}
+	// gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
+	// 	return tablePrefix + defaultTableName
+	// }
 
 	db.SingularTable(true)
 	db.LogMode(true)
