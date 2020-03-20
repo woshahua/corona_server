@@ -41,10 +41,10 @@ type DeadPatient struct {
 
 func GetLocationPatientData() (*[]PatientLocation, error) {
 	var location []PatientLocation
-	err := db.Find(&location).Error
+	err := db.Order("sum desc").Limit(15).Find(&location).Error
 
 	sort.SliceStable(location, func(i, j int) bool {
-		return location[i].Sum < location[j].Sum
+		return location[i].Sum > location[j].Sum
 	})
 
 	return &location, err
@@ -52,7 +52,7 @@ func GetLocationPatientData() (*[]PatientLocation, error) {
 
 func GetDailyPatientData() (*DailyPatient, error) {
 	var patient []PatientByDate
-	err := db.Order("date desc").Limit(3).Find(&patient).Error
+	err := db.Order("id desc").Limit(3).Find(&patient).Error
 
 	var dailyPatient = DailyPatient{}
 	dailyPatient.Date = patient[0].Date
@@ -64,7 +64,7 @@ func GetDailyPatientData() (*DailyPatient, error) {
 
 func GetDeadPatientData() (*DeadPatient, error) {
 	var patient []PatientByDate
-	err := db.Order("date desc").Limit(2).Find(&patient).Error
+	err := db.Order("id desc").Limit(2).Find(&patient).Error
 
 	var deadPatient = DeadPatient{}
 	deadPatient.Date = patient[0].Date
@@ -76,7 +76,7 @@ func GetDeadPatientData() (*DeadPatient, error) {
 
 func GetCurrentPatient() (*CurrentPatient, error) {
 	var patient []PatientByDate
-	err := db.Order("date desc").Limit(2).Find(&patient).Error
+	err := db.Order("id desc").Limit(2).Find(&patient).Error
 
 	var currentPatient = CurrentPatient{}
 	currentPatient.Date = patient[0].Date
@@ -88,20 +88,13 @@ func GetCurrentPatient() (*CurrentPatient, error) {
 
 func GetPeriodPatientData() (*[]PatientByDate, error) {
 	var patient []PatientByDate
-	err := db.Order("date desc").Limit(5).Find(&patient).Error
+	err := db.Order("id desc").Limit(5).Find(&patient).Error
 
 	sort.SliceStable(patient, func(i, j int) bool {
 		return patient[i].Date < patient[j].Date
 	})
 
 	return &patient, err
-}
-
-func GetJapanesePatientByLoaction() (*[]PatientLocation, error) {
-	var locationList []PatientLocation
-	err := db.Order("sum desc").Limit(5).Find(&locationList).Error
-
-	return &locationList, err
 }
 
 func InsertPatientByDate(person *PatientByDate) error {
@@ -137,5 +130,4 @@ func UpdatePatientByLocation(location *PatientLocation) error {
 		return err
 	}
 	return nil
-
 }

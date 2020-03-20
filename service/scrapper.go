@@ -51,7 +51,9 @@ func ScrapNews() {
 	articleList.Each(func(_ int, s *goquery.Selection) {
 		url, _ := s.Find("a").Attr("href")
 		title := s.Find("p").Text()
-		news := models.News{Title: title, Link: url}
+
+		description, err := ScapNewsSummary(url)
+		news := models.News{Title: title, Link: url, Description: descrition}
 		newsList = append(newsList, news)
 	})
 
