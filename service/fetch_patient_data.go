@@ -22,31 +22,60 @@ func Import() error {
 	lines, err := csv.NewReader(f).ReadAll()
 	for i, line := range lines {
 		if i > 0 {
+			confirmed, err := strconv.Atoi(line[1])
+			if err != nil {
+				confirmed = 0
+			}
+
+			recovered, err := strconv.Atoi(line[2])
+			if err != nil {
+				recovered = 0
+			}
+
+			dead, err := strconv.Atoi(line[3])
+			if err != nil {
+				dead = 0
+			}
+
+			critical, err := strconv.Atoi(line[4])
+			if err != nil {
+				critical = 0
+			}
+
+			tested, err := strconv.Atoi(line[5])
+			if err != nil {
+				tested = 0
+			}
+
 			patient := models.PatientByDate{
 				Date:      line[0],
-				Confirmed: strconv.Atoi(line[1]),
-				Recoverd:  strconv.Atoi(line[2]),
-				Dead:      strconv.Atoi(line[3]),
-				Critical:  strconv.Atoi(line[4]),
-				Tested:    strconv.Atoi(line[5])
-			}
+				Confirmed: confirmed,
+				Recovered: recovered,
+				Dead:      dead,
+				Critical:  critical,
+				Tested:    tested}
 
 			models.InsertPatientByDate(&patient)
 		}
 	}
 
-	csvPath := "staticFile/patientByLocation.csv"
-	f, err := os.Open(csvPath)
+	csvPath = "staticFile/patientByLocation.csv"
+	f, err = os.Open(csvPath)
 	defer f.Close()
 
 	if err != nil {
 		return err
 	}
 
-	lines, err := csv.NewReader(f).ReadAll()
+	lines, err = csv.NewReader(f).ReadAll()
 	for i, line := range lines {
 		if i > 1 {
-			location := models.PatientLocation{ Sum: strconv.Atoi(line[1]), Location: line[2]}
+			sum, err := strconv.Atoi(line[2])
+			if err != nil {
+				sum = 0
+			}
+
+			location := models.PatientLocation{Sum: sum, Location: line[1]}
 			models.UpdatePatientByLocation(&location)
 		}
 	}

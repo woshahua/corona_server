@@ -19,8 +19,8 @@ type Model struct {
 
 func init() {
 	var (
-		err                                                     error
-		dbType, dbName, user, password, host, port, tablePrefix string
+		err                                        error
+		dbType, dbName, user, password, host, port string
 	)
 
 	sec, err := setting.Cfg.GetSection("database")
@@ -34,7 +34,6 @@ func init() {
 	password = sec.Key("PASSWORD").String()
 	host = sec.Key("HOST").String()
 	port = sec.Key("PORT").String()
-	tablePrefix = sec.Key("TABLE_PREFIX").String()
 
 	db, err = gorm.Open(dbType, fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		host,
@@ -56,7 +55,7 @@ func init() {
 	db.LogMode(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
-	db.AutoMigrate(&News{}, &PatientByDate{}, &PatientLocation)
+	db.AutoMigrate(&News{}, &PatientByDate{}, &PatientLocation{})
 }
 
 func CloseDB() {

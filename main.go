@@ -34,12 +34,12 @@ func RunCronJob() {
 	fetchJapnesePatientCSV := func() {
 		log.Println("Run service.Import")
 		filePath := "staticFile/patientByDate.csv"
-		url := "https://docs.google.com/spreadsheets/d/1jfB4muWkzKTR0daklmf8D5F0Uf_IYAgcx_-Ij9McClQ/export?format=csv&gid=1399411442"
-		err := service.DownLoadFile(filePath, url)
-
-		filePath := "staticFile/patientByLocation.csv"
 		url := "https://docs.google.com/spreadsheets/d/1jfB4muWkzKTR0daklmf8D5F0Uf_IYAgcx_-Ij9McClQ/export?format=csv&gid=211530313"
 		err := service.DownLoadFile(filePath, url)
+
+		filePath = "staticFile/patientByLocation.csv"
+		url = "https://docs.google.com/spreadsheets/d/1jfB4muWkzKTR0daklmf8D5F0Uf_IYAgcx_-Ij9McClQ/export?format=csv&gid=1399411442"
+		err = service.DownLoadFile(filePath, url)
 
 		if err != nil {
 			log.Println("faild fetch csv file", err)
