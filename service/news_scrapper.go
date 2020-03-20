@@ -7,6 +7,8 @@ import (
 )
 
 func ScapNewsSummary(url string) (string, error) {
+	description := ""
+
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		fmt.Println("error scraping open side", err)
@@ -15,8 +17,9 @@ func ScapNewsSummary(url string) (string, error) {
 
 	doc.Find("meta").Each(func(i int, s *goquery.Selection) {
 		if name, _ := s.Attr("name"); name == "description" {
-			description, _ := s.Attr("content")
-			return description, err
+			description, _ = s.Attr("content")
 		}
 	})
+
+	return description, nil
 }
