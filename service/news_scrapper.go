@@ -11,7 +11,7 @@ func ScapNewsSummary(url string) (string, error) {
 
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
-		fmt.Println("error scraping open side", err)
+		fmt.Println("error scraping open site", err)
 		return "", err
 	}
 

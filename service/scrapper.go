@@ -53,7 +53,12 @@ func ScrapNews() {
 		title := s.Find("p").Text()
 
 		description, err := ScapNewsSummary(url)
-		news := models.News{Title: title, Link: url, Description: description}
+		news := models.News{Title: title, Link: url}
+		if err != nil && description != "" {
+			news.Description = description
+		} else {
+			news.Description = title
+		}
 		newsList = append(newsList, news)
 	})
 
