@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -33,6 +34,7 @@ func InsertNews(news *News) {
 		data := strings.Split(news.Title, " ")
 		title := strings.Join(data[:len(data)-5], " ")
 
+		// temporary handle date time string
 		temp := strings.Replace(data[len(data)-3], ",", "", 1)
 		dateTimeList := strings.Split(temp, "/")
 		reversedTimeList := make([]string, len(dateTimeList))
@@ -42,7 +44,20 @@ func InsertNews(news *News) {
 			reversedTimeList[len(dateTimeList)-cnt-1] = dateTimeList[cnt]
 			cnt -= 1
 		}
-		updatedTime := strings.Join(reversedTimeList, "/") + " " + data[len(data)-2]
+
+		// temporary handle clock tiem string, oh shit code, jesus forgive me
+
+		var updateClock string
+		if data[len(data)-1] == "PM" {
+			updateClockList := strings.Split(data[len(data)-2], ":")
+			fixHour, _ := strconv.Atoi(updateClockList[0])
+
+			updateClockList[0] = string(fixHour + 12)
+			updateClock = strings.Join(updateClockList, ":")
+
+		}
+
+		updatedTime := strings.Join(reversedTimeList, "/") + " " + updateClock
 
 		// jst time zone
 		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
