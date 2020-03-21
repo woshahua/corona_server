@@ -38,7 +38,7 @@ func InsertNews(news *News) {
 		now := time.Now().UTC().In(jst)
 
 		news.Title = title
-		news.UpdatedTime, _ = time.Parse("2006/1/2 15:04:05", updatedTime)
+		news.UpdatedTime, _ = time.Parse("2/1/2006 15:04:05", updatedTime)
 		news.PassedHour = int(now.Sub(news.UpdatedTime).Hours() + 9.0)
 		news.PassedDay = int((now.Sub(news.UpdatedTime).Hours() + 9.0) / 24.0)
 		news.PassedMinutes = int(time.Now().Sub(news.UpdatedTime).Minutes() + 9*60)
@@ -51,6 +51,8 @@ func InsertNews(news *News) {
 			if err != nil {
 				log.Fatalf("failed insert patient: %v", err)
 			}
+		} else {
+			db.Save(&news)
 		}
 	}
 }
