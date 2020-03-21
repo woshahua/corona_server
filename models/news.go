@@ -54,7 +54,7 @@ func InsertNews(news *News) {
 		news.PassedDay = int((now.Sub(news.UpdatedTime).Hours() + 9.0) / 24.0)
 		news.PassedMinutes = int(time.Now().Sub(news.UpdatedTime).Minutes() + 9*60)
 
-		notExist := db.Find(&existNews, "title = ?", news.Title).RecordNotFound()
+		notExist := db.Find(&existNews, "title = ?", news.Title).First(&existNews).RecordNotFound()
 		if notExist {
 			db.NewRecord(news)
 			db.Create(&news)
@@ -63,7 +63,12 @@ func InsertNews(news *News) {
 				log.Fatalf("failed insert patient: %v", err)
 			}
 		} else {
-			db.Save(&news)
+			existNews.UpdatedTime = news.UpdatedTime
+			existNews.PassedDay = news.PassedDay
+			existNews.PassedMinutes = news.PassedMinutes
+			existNews.PassedHour = news.PassedHour
+
+			db.Save(&existNews)
 		}
 	}
 }
