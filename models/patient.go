@@ -3,6 +3,9 @@ package models
 import (
 	"sort"
 	"strings"
+	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 type PatientLocation struct {
@@ -39,6 +42,11 @@ type DeadPatient struct {
 	Diff    int
 }
 
+type LastUpdateTime struct {
+	gorm.Model
+	patientDataUpdateTime time.Time `json: "patient_data_updated_time"`
+}
+
 func GetLocationPatientData() (*[]PatientLocation, error) {
 	var location []PatientLocation
 	err := db.Order("sum desc").Limit(15).Find(&location).Error
@@ -48,6 +56,13 @@ func GetLocationPatientData() (*[]PatientLocation, error) {
 	})
 
 	return &location, err
+}
+
+func GetLatestPatientData() (*PatientByDate, error) {
+	var patient PatientByDate
+
+	err := db.Order("id desc").Limit(1).Find(&patient).Error
+	return &patient, err
 }
 
 func GetDailyPatientData() (*DailyPatient, error) {
@@ -130,4 +145,15 @@ func UpdatePatientByLocation(location *PatientLocation) error {
 		return err
 	}
 	return nil
+}
+
+func UpdateDataUpdatedTime(updateTime *LastUpdateTime) error {
+	var lastupdateTime LastUpdateTime
+	err := db.Find(&lastupdateTime).First(&lastupdateTime).Error
+	if err != nil {
+		return err
+	}
+
+	lastupdateTime.patientDataUpdateTime = updateTime.patientDataUpdateTime
+	db.Save(&lastupdateTime)
 }
