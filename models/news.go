@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -31,15 +30,18 @@ func InsertNews(news *News) {
 	if news.Title != "" {
 		var existNews News
 		data := strings.Split(news.Title, " ")
-		fmt.Println(data)
-		title := strings.Join(data[:len(data)-2], " ")
+		title := strings.Join(data[:len(data)-4], " ")
 		updatedTime := strings.Join(data[len(data)-2:], " ")
+
+		// jst time zone
+		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+		now := time.Now().UTC().In(jst)
 
 		news.Title = title
 		news.UpdatedTime, _ = time.Parse("2006/1/2 15:04:05", updatedTime)
-		news.PassedHour = int(time.Now().Sub(news.UpdatedTime).Hours())
-		news.PassedDay = int(time.Now().Sub(news.UpdatedTime).Hours() / 24.0)
-		news.PassedMinutes = int(time.Now().Sub(news.UpdatedTime).Minutes())
+		news.PassedHour = int(now.Sub(news.UpdatedTime).Hours() + 9.0)
+		news.PassedDay = int((now.Sub(news.UpdatedTime).Hours() + 9.0) / 24.0)
+		news.PassedMinutes = int(time.Now().Sub(news.UpdatedTime).Minutes() + 9*60)
 
 		notExist := db.Find(&existNews, "title = ?", news.Title).RecordNotFound()
 		if notExist {
