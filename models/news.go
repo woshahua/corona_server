@@ -54,7 +54,8 @@ func InsertNews(news *News) {
 
 			updateClockList[0] = string(fixHour + 12)
 			updateClock = strings.Join(updateClockList, ":")
-
+		} else {
+			updateClock = data[len(data)-2]
 		}
 
 		updatedTime := strings.Join(reversedTimeList, "/") + " " + updateClock
