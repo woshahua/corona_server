@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -30,16 +31,18 @@ func InsertNews(news *News) {
 	if news.Title != "" {
 		var existNews News
 		data := strings.Split(news.Title, " ")
-		title := strings.Join(data[:len(data)-4], " ")
+		title := strings.Join(data[:len(data)-5], " ")
 
-		dateTimeList := strings.Split(data[len(data)-2], "/")
-		var reversedTimeList []string
+		temp := strings.Replace(data[len(data)-3], ",", "", 1)
+		dateTimeList := strings.Split(temp, "/")
+		reversedTimeList := make([]string, len(dateTimeList))
 		cnt := len(dateTimeList) - 1
 		for cnt >= 0 {
+			fmt.Println(reversedTimeList)
 			reversedTimeList[len(dateTimeList)-cnt-1] = dateTimeList[cnt]
 			cnt -= 1
 		}
-		updatedTime := strings.Join(reversedTimeList, "/") + " " + data[len(data)-1]
+		updatedTime := strings.Join(reversedTimeList, "/") + " " + data[len(data)-2]
 
 		// jst time zone
 		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
