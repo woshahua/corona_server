@@ -44,7 +44,17 @@ type DeadPatient struct {
 
 type LastUpdateTime struct {
 	gorm.Model
-	patientDataUpdateTime time.Time `json: "patient_data_updated_time"`
+	PatientDataUpdateTime string `json: "patient_data_updated_time"`
+}
+
+func GetLastUpdatedTime() (*LastUpdateTime, error) {
+	var updateTime LastUpdateTime
+	err := db.Find(&updateTime).First(&updateTime).Error
+	if err != nil {
+		return &LastUpdateTime{PatientDataUpdateTime: time.Now().Format("2006/1/2 15:04:05")}, err
+	}
+
+	return &updateTime, nil
 }
 
 func GetLocationPatientData() (*[]PatientLocation, error) {
@@ -154,6 +164,7 @@ func UpdateDataUpdatedTime(updateTime *LastUpdateTime) error {
 		return err
 	}
 
-	lastupdateTime.patientDataUpdateTime = updateTime.patientDataUpdateTime
+	lastupdateTime.PatientDataUpdateTime = updateTime.PatientDataUpdateTime
 	db.Save(&lastupdateTime)
+	return nil
 }
