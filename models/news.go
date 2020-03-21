@@ -31,14 +31,22 @@ func InsertNews(news *News) {
 		var existNews News
 		data := strings.Split(news.Title, " ")
 		title := strings.Join(data[:len(data)-4], " ")
-		updatedTime := strings.Join(data[len(data)-2:], " ")
+
+		dateTimeList := strings.Split(data[len(data)-2], "/")
+		var reversedTimeList []string
+		cnt := len(dateTimeList) - 1
+		for cnt >= 0 {
+			reversedTimeList[len(dateTimeList)-cnt-1] = dateTimeList[cnt]
+			cnt -= 1
+		}
+		updatedTime := strings.Join(reversedTimeList, "/") + " " + data[len(data)-1]
 
 		// jst time zone
 		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 		now := time.Now().UTC().In(jst)
 
 		news.Title = title
-		news.UpdatedTime, _ = time.Parse("2/1/2006 15:04:05", updatedTime)
+		news.UpdatedTime, _ = time.Parse("2006/2/1 15:04:05", updatedTime)
 		news.PassedHour = int(now.Sub(news.UpdatedTime).Hours() + 9.0)
 		news.PassedDay = int((now.Sub(news.UpdatedTime).Hours() + 9.0) / 24.0)
 		news.PassedMinutes = int(time.Now().Sub(news.UpdatedTime).Minutes() + 9*60)
