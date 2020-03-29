@@ -1,7 +1,7 @@
 
 # Setup
 ## install golang
-1.12.7 をローカルインストールする
+golang をローカルインストールする
 
 ```
 brew install golang
@@ -15,7 +15,23 @@ $ git clone https://github.com/woshahua/corona_server.git $GOPATH/src/github.com
 ```
 
 ## Run
-### 依存ライブラリをダウンロード
+## 依存ライブラリをダウンロード
 ```
 go mod download
+```
+
+## docker setting
+```
+docker run -d \
+--name corona \
+-p 5888:5432 \
+-e POSTGRES_USER=woshahua \
+-e POSTGRES_PASSWORD=woshahua \
+-e POSTGRES_DB=corona \
+postgres
+```
+
+## run server 
+```
+go run main.go
 ```
