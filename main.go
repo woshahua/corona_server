@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// start a new routine
-	go RunCronJob()
+	//go RunCronJob()
 	s.ListenAndServe()
 }
 
