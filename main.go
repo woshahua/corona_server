@@ -1,33 +1,47 @@
 package main
 
 import (
-	"fmt"
+	"corona_server/environment"
+	"corona_server/infrastructure/mysql"
+	"corona_server/routers"
 	"log"
-	"net/http"
+	"os"
 	"runtime"
 	"time"
 
 	"github.com/carlescere/scheduler"
 	"github.com/woshahua/corona_server/models"
-	"github.com/woshahua/corona_server/pkg/setting"
-	"github.com/woshahua/corona_server/routers"
 	"github.com/woshahua/corona_server/service"
 )
 
 func main() {
-	router := routers.InitRouter()
+	//router := routers.InitRouter()
+	//
+	//s := &http.Server{
+	//	Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+	//	Handler:        router,
+	//	ReadTimeout:    setting.ReadTimeout,
+	//	WriteTimeout:   setting.WriteTimeout,
+	//	MaxHeaderBytes: 1 << 20,
+	//}
+	//
+	//// start a new routine
+	//go RunCronJob()
+	//s.ListenAndServe()
 
-	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
-		Handler:        router,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
-		MaxHeaderBytes: 1 << 20,
+	if !environment.IsAppEngine() {
+		if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./config/dev_credential.json"); err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	// start a new routine
-	go RunCronJob()
-	s.ListenAndServe()
+	if err := mysql.Connection(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := routers.InitRouter().Run(environment.GetSharedEnvironments().IPAddress + ":" + environment.GetSharedEnvironments().Port); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func RunCronJob() {
