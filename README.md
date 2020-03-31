@@ -1,64 +1,37 @@
-#### API document
 
-- `GET /api/patient/japanese/location`
+# Setup
+## install golang
+golang をローカルインストールする
 
-  ```json
-  { 
-   "code": 200,
-   "msg": "OK",
-   "data": [
-     {"Location": "北海道",
-      "PatientSum": 100
-     }, ...
-   ]
-  }
-  ```
+```
+brew install golang
+```
 
-- `GET /api/patient/news?number=5`
+## Git clone
+`$GOPATH`を設定してgit clone
 
-  ```json
-  { 
-   "code": 200,
-   "msg": "OK",
-   "data": [
-     {"Title": "corona virus",
-      "Url": "www.google,com"
-     }, ...
-   ]
-  }
-  ```
+```
+$ git clone https://github.com/woshahua/corona_server.git $GOPATH/src/github.com/woshahua/corona_server
+```
 
-- `GET /api/patient/japanese/summary`
+## Run
+## 依存ライブラリをダウンロード
+```
+go mod download
+```
 
-  ```json
-  { 
-   "code": 200,
-   "msg": "OK",
-   "data": {
-    "PatientSum": 200,
-    "NewPatient": {
-    	"Sum": 10,
-      "Growth": 12, 
-  	},
-    "DeadPatient": {
-    	"Sum": 20,
-      "Growth": -5, 
-    }
-    "UpdatedDate": "2020年3月7日"
-  }
-  ```
+## docker setting
+```
+docker run -d \
+--name corona \
+-p 5888:5432 \
+-e POSTGRES_USER=woshahua \
+-e POSTGRES_PASSWORD=woshahua \
+-e POSTGRES_DB=corona \
+postgres
+```
 
-- `GET /api/patient/summary`
-
-  ```json
-  { 
-   "code": 200,
-   "msg": "OK",
-   "data": {
-    "GlobalSum": 1000000,
-    "ShipSum": 1000
-   }
-  }
-  ```
-
-  
+## run server 
+```
+go run main.go
+```
