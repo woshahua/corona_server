@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"corona_server/interfaces/handler"
+	"github.com/woshahua/corona_server/interfaces/handler"
 	"github.com/gin-gonic/gin"
 )
 

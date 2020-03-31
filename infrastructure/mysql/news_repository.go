@@ -1,8 +1,8 @@
 package mysql
 
 import (
-	"corona_server/models"
 	"fmt"
+	"github.com/woshahua/corona_server/models"
 	"log"
 	"strconv"
 	"strings"

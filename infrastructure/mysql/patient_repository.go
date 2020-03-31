@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"corona_server/models"
+	"github.com/woshahua/corona_server/models"
 	"sort"
 	"strings"
 	"time"

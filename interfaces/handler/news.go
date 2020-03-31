@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"corona_server/infrastructure/mysql"
+	"github.com/woshahua/corona_server/infrastructure/mysql"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/woshahua/corona_server/pkg/e"

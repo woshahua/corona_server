@@ -1,9 +1,10 @@
 package mysql
 
 import (
-	"corona_server/environment"
 	"github.com/jinzhu/gorm"
+	"github.com/woshahua/corona_server/environment"
 	"golang.org/x/xerrors"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (

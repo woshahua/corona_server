@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"corona_server/infrastructure/mysql"
 	"fmt"
+	"github.com/woshahua/corona_server/infrastructure/mysql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/woshahua/corona_server/models"
 	"github.com/woshahua/corona_server/pkg/e"
 )
 
@@ -71,7 +70,7 @@ func GetDailyPatient(c *gin.Context) {
 }
 
 func GetDeadPatient(c *gin.Context) {
-	data, err := models.GetDeadPatientData()
+	data, err := mysql.GetDeadPatientData()
 	code := e.SUCCESS
 	if err != nil {
 		code = e.ERROR

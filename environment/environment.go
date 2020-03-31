@@ -35,9 +35,6 @@ type Environments struct {
 	MysqlProtocol string `required:"true" split_words:"true"`
 	MysqlHost     string `required:"true" split_words:"true"`
 	MysqlDbName   string `required:"true" split_words:"true"`
-
-	AppKey     string `required:"true" split_words:"true"`
-	AuthKey    string `required:"true" split_words:"true"`
 }
 
 var environments *Environments
@@ -58,9 +55,7 @@ func GetSharedEnvironments() *Environments {
 					panic(xerrors.Errorf(errGetSharedEnvironments.Error()+": %s", err))
 				}
 			} else {
-				secretPath := fmt.Sprintf("%s/../../../config/%s.env", path.Dir(filename), "secret")
-				_ = godotenv.Load(secretPath)
-				envPath := fmt.Sprintf("%s/../../../config/%s.env", path.Dir(filename), os.Getenv("BE_ENV"))
+				envPath := fmt.Sprintf("%s/../config/%s.env", path.Dir(filename), os.Getenv("BE_ENV"))
 				if err := godotenv.Load(envPath); err != nil {
 					panic(xerrors.Errorf(errGetSharedEnvironments.Error()+": %s", err))
 				}

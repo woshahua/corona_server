@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"corona_server/environment"
+	"github.com/woshahua/corona_server/environment"
 	"google.golang.org/appengine"
 )
 
