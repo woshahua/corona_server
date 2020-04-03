@@ -44,11 +44,14 @@ type DeadPatient struct {
 func GetLastUpdatedTime() (string, error) {
 	var location PatientLocation
 	err := db.Find(&location).Last(&location).Error
+	updateTime := TransferToJSTTime(time.Now())
 	if err != nil {
-		return time.Now().Format("2006/1/2 15:04:05"), err
+		return updateTime.Format("2006/1/2 15:04:05"), err
 	}
 
-	return location.UpdatedAt.Format("2006/1/2 15:04:05"), nil
+	updateTime = TransferToJSTTime(location.UpdatedAt)
+
+	return updateTime.Format("2006/1/2 15:04:05"), nil
 }
 
 func GetLocationPatientData() (*[]PatientLocation, error) {
@@ -152,4 +155,10 @@ func UpdatePatientByLocation(location *PatientLocation) error {
 		db.Save(&locationData)
 		return nil
 	}
+}
+
+func TransferToJSTTime(utcTime time.Time) time.Time {
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	jstTime := utcTime.UTC().In(jst)
+	return jstTime
 }

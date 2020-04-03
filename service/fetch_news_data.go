@@ -65,14 +65,14 @@ func FetchNewsData() {
 	}
 
 	var newsList []models.News
-	now := transferToJSTTime(time.Now())
+	now := models.TransferToJSTTime(time.Now())
 	// transfer parsed model to our original news model
 	for _, article := range news.Articles {
 		var news models.News
 
 		news.Title = article.Title + " " + article.Source.Name
 		news.Description = article.Description
-		news.UpdatedTime = transferToJSTTime(article.PublishedAt)
+		news.UpdatedTime = models.TransferToJSTTime(article.PublishedAt)
 		news.Link = article.Url
 		news.PassedHour = int(now.Sub(news.UpdatedTime).Hours())
 		news.PassedDay = int((now.Sub(news.UpdatedTime).Hours()) / 24.0)
@@ -82,10 +82,4 @@ func FetchNewsData() {
 	}
 
 	Cache.Set("news", newsList, cache.DefaultExpiration)
-}
-
-func transferToJSTTime(utcTime time.Time) time.Time {
-	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-	jstTime := utcTime.UTC().In(jst)
-	return jstTime
 }
