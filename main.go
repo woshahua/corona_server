@@ -5,10 +5,8 @@ import (
 	"log"
 	"net/http"
 	"runtime"
-	"time"
 
 	"github.com/carlescere/scheduler"
-	"github.com/woshahua/corona_server/models"
 	"github.com/woshahua/corona_server/pkg/setting"
 	"github.com/woshahua/corona_server/routers"
 	"github.com/woshahua/corona_server/service"
@@ -49,13 +47,6 @@ func RunCronJob() {
 	}
 
 	importCSVDataToDB := func() {
-		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-		now := time.Now().UTC().In(jst)
-
-		var updateTime = models.LastUpdateTime{}
-		updateTime.PatientDataUpdateTime = now.Format("2016/1/2 15:04:05")
-		_ = models.UpdateDataUpdatedTime(&updateTime)
-
 		log.Println("Run service.Import")
 		err := service.Import()
 		if err != nil {

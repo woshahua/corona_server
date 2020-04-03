@@ -17,9 +17,3 @@ create table `patient_by_date` (
     `tested` int(10) NOT NULL,
     primary key (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-drop table if exists last_update_time;
-create table `last_update_time`(
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `patient_data_update_time` varchar(10) NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;

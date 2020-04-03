@@ -8,13 +8,13 @@ import (
 )
 
 type PatientLocation struct {
-	ID       int    `gorm: "primary_key", json: "id"`
+	gorm.Model
 	Sum      int    `json: "sum"`
 	Location string `json: "patient_location"`
 }
 
 type PatientByDate struct {
-	ID        int    `gorm: "primary_key", json: "id"`
+	gorm.Model
 	Date      string `json: "date"`
 	Confirmed int    `json: "confirmed`
 	Recovered int    `json: "recovered`
@@ -41,19 +41,14 @@ type DeadPatient struct {
 	Diff    int
 }
 
-type LastUpdateTime struct {
-	gorm.Model
-	PatientDataUpdateTime string `json: "patient_data_updated_time"`
-}
-
-func GetLastUpdatedTime() (*LastUpdateTime, error) {
-	var updateTime LastUpdateTime
-	err := db.Find(&updateTime).First(&updateTime).Error
+func GetLastUpdatedTime() (string, error) {
+	var location PatientLocation
+	err := db.Find(&location).Last(&location).Error
 	if err != nil {
-		return &LastUpdateTime{PatientDataUpdateTime: time.Now().Format("2006/1/2 15:04:05")}, err
+		return time.Now().Format("2006/1/2 15:04:05"), err
 	}
 
-	return &updateTime, nil
+	return location.UpdatedAt.Format("2006/1/2 15:04:05"), nil
 }
 
 func GetLocationPatientData() (*[]PatientLocation, error) {
@@ -140,7 +135,6 @@ func InsertPatientByDate(person *PatientByDate) error {
 		err := db.Save(&patient).Error
 		return err
 	}
-	return nil
 }
 
 func UpdatePatientByLocation(location *PatientLocation) error {
@@ -158,16 +152,4 @@ func UpdatePatientByLocation(location *PatientLocation) error {
 		db.Save(&locationData)
 		return nil
 	}
-}
-
-func UpdateDataUpdatedTime(updateTime *LastUpdateTime) error {
-	var lastupdateTime LastUpdateTime
-	err := db.Find(&lastupdateTime).First(&lastupdateTime).Error
-	if err != nil {
-		return err
-	}
-
-	lastupdateTime.PatientDataUpdateTime = updateTime.PatientDataUpdateTime
-	db.Save(&lastupdateTime)
-	return nil
 }
