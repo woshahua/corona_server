@@ -64,8 +64,8 @@ func RunCronJob() {
 	}
 
 	scrapNewsData := func() {
-		log.Println("Run service.ScrapNews")
-		service.ScrapNews()
+		log.Println("Run service.fetchNews")
+		service.FetchNewsData()
 	}
 
 	// fetch newest japanese patient data from:
