@@ -127,14 +127,14 @@ func InsertPatientByDate(person *PatientByDate) error {
 
 	if notExist {
 		date := strings.Split(person.Date, "-")
-		person.Date = date[1] + "." + date[2]
+		person.Date = date[1] + "/" + date[2]
 		db.NewRecord(person)
 		db.Create(&person)
 		err := db.Save(&person).Error
 		return err
 	} else {
 		date := strings.Split(person.Date, "-")
-		patient.Date = date[1] + "." + date[2]
+		patient.Date = date[1] + "/" + date[2]
 		patient.Confirmed = person.Confirmed
 		patient.Recovered = person.Recovered
 		patient.Dead = person.Dead
