@@ -2,7 +2,6 @@ package models
 
 import (
 	"sort"
-	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -128,16 +127,16 @@ func InsertPatientByDate(person *PatientByDate) error {
 	var notExist = db.Find(&patient, "patient_by_date.date = ?", patient.Date).First(&patient).RecordNotFound()
 
 	if notExist {
-		date := strings.Split(person.Date, "-")
-		person.Date = date[1] + "." + date[2]
 		db.NewRecord(person)
 		db.Create(&person)
 		err := db.Save(&person).Error
 		return err
 	} else {
-		patient = *person
-		date := strings.Split(person.Date, "-")
-		patient.Date = date[1] + "." + date[2]
+		patient.Confirmed = person.Confirmed
+		patient.Recovered = person.Recovered
+		patient.Dead = person.Dead
+		patient.Critical = person.Critical
+		patient.Tested = person.Tested
 		err := db.Save(&patient).Error
 		return err
 	}
@@ -153,8 +152,12 @@ func UpdatePatientByLocation(location *PatientLocation) error {
 		db.Create(&location)
 		err := db.Save(&location).Error
 		return err
+	} else {
+		locationData.Location = location.Location
+		locationData.Sum = location.Sum
+		db.Save(&locationData)
+		return nil
 	}
-	return nil
 }
 
 func UpdateDataUpdatedTime(updateTime *LastUpdateTime) error {

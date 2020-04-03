@@ -70,7 +70,7 @@ func FetchNewsData() {
 	for _, article := range news.Articles {
 		var news models.News
 
-		news.Title = article.Title
+		news.Title = article.Title + " " + article.Source.Name
 		news.Description = article.Description
 		news.UpdatedTime = transferToJSTTime(article.PublishedAt)
 		news.Link = article.Url
