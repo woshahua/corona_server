@@ -118,7 +118,7 @@ func InsertPatientByDate(person *models.PatientByDate) error {
 	if err != nil { return err }
 	var patient models.PatientByDate
 	patient.Date = person.Date
-	var notExist = conn.Find(&patient, "patient_by_date.date = ?", patient.Date).First(&patient).RecordNotFound()
+	var notExist = conn.Find(&patient, "date = ?", patient.Date).First(&patient).RecordNotFound()
 
 	if notExist {
 		date := strings.Split(person.Date, "-")
@@ -142,7 +142,7 @@ func UpdatePatientByLocation(location *models.PatientLocation) error {
 	if err != nil { return err }
 	var locationData models.PatientLocation
 	locationData.Location = location.Location
-	var notExist = conn.Find(&locationData, "patient_location.location = ?", locationData.Location).First(&locationData).RecordNotFound()
+	var notExist = conn.Find(&locationData, "location = ?", locationData.Location).First(&locationData).RecordNotFound()
 	if notExist {
 		conn.NewRecord(location)
 		conn.Create(&location)
