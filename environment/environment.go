@@ -43,25 +43,25 @@ var once sync.Once
 // GetSharedEnvironments は環境変数を保持するシングルトンを返す
 func GetSharedEnvironments() *Environments {
 	once.Do(func() {
-		switch os.Getenv("BE_ENV") {
+		switch os.Getenv("ENV") {
 		case devEnv, prodEnv:
 			_, filename, _, ok := runtime.Caller(0)
 			if !ok {
 				panic(xerrors.Errorf(errGetSharedEnvironments.Error() + "cause No caller information"))
 			}
 			if IsAppEngine() {
-				envPath := fmt.Sprintf("./config/%s.env", os.Getenv("BE_ENV"))
+				envPath := fmt.Sprintf("./config/%s.env", os.Getenv("ENV"))
 				if err := godotenv.Load(envPath); err != nil {
 					panic(xerrors.Errorf(errGetSharedEnvironments.Error()+": %s", err))
 				}
 			} else {
-				envPath := fmt.Sprintf("%s/../config/%s.env", path.Dir(filename), os.Getenv("BE_ENV"))
+				envPath := fmt.Sprintf("%s/../config/%s.env", path.Dir(filename), os.Getenv("ENV"))
 				if err := godotenv.Load(envPath); err != nil {
 					panic(xerrors.Errorf(errGetSharedEnvironments.Error()+": %s", err))
 				}
 			}
 		default:
-			err := xerrors.Errorf(errGetSharedEnvironments.Error()+" cause Unexpected value '%s' by BE_ENV", os.Getenv("BE_ENV"))
+			err := xerrors.Errorf(errGetSharedEnvironments.Error()+" cause Unexpected value '%s' by ENV", os.Getenv("ENV"))
 			panic(err)
 		}
 
@@ -81,9 +81,9 @@ func IsAppEngine() bool {
 }
 
 func IsDev() bool {
-	return os.Getenv("BE_ENV") == devEnv
+	return os.Getenv("ENV") == devEnv
 }
 
 func IsProd() bool {
-	return os.Getenv("BE_ENV") == prodEnv
+	return os.Getenv("ENV") == prodEnv
 }

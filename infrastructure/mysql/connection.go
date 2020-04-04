@@ -14,14 +14,11 @@ var (
 )
 
 var (
-	// ErrNewConnection は DB 接続に関するエラー
+	//DB 接続に関するエラー
 	ErrNewConnection = xerrors.New("infrastructure-mysql-connection: failed to newConnection")
 )
 
-const errorCodeDuplicateEntry = "1062"
-const errorCodeForeignKeyConstraint = "1452"
-
-//Connection はDB 接続
+//DB 接続
 func Connection() error {
 	conn, err = newConnection()
 	if err != nil {
