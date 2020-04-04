@@ -7,14 +7,12 @@ import (
 
 type PatientLocation struct {
 	gorm.Model
-	ID       int    `json: "id"`
 	Sum      int    `json: "sum"`
 	Location string `json: "patient_location"`
 }
 
 type PatientByDate struct {
 	gorm.Model
-	ID        int    `json: "id"`
 	Date      string `json: "date"`
 	Confirmed int    `json: "confirmed`
 	Recovered int    `json: "recovered`
