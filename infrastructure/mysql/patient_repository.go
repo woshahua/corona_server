@@ -7,18 +7,21 @@ import (
 	"time"
 )
 
-func GetLastUpdatedTime() (*models.LastUpdateTime, error) {
+func GetLastUpdatedTime() (models.LastUpdateTime, error) {
 	conn, err = newConnection()
+
+	var location models.PatientLocation
+	var updatedOn models.LastUpdateTime
+	err := conn.Find(&location).Last(&location).Error
+	updateTime := models.TransferToJSTTime(time.Now())
 	if err != nil {
-		return nil, err
-	}
-	var updateTime models.LastUpdateTime
-	err := conn.Find(&updateTime).First(&updateTime).Error
-	if err != nil {
-		return &models.LastUpdateTime{PatientDataUpdateTime: time.Now().Format("2006/1/2 15:04:05")}, err
+		updatedOn.PatientDataUpdateTime = updateTime.Format("2006/1/2 15:04:05")
+		return updatedOn, err
 	}
 
-	return &updateTime, nil
+	updateTime = models.TransferToJSTTime(location.UpdatedAt)
+	updatedOn.PatientDataUpdateTime = updateTime.Format("2006/1/2 15:04:05")
+	return updatedOn, nil
 }
 
 func GetLocationPatientData() (*[]models.PatientLocation, error) {

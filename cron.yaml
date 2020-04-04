@@ -11,8 +11,8 @@ cron:
     schedule: every 12 hours synchronized
     timezone: Asia/Tokyo
 
-  - description: "scrap_news_data"
+  - description: "fetch_news_data"
     target: default
-    url: /cron/scrap_news_data
+    url: /cron/fetch_news_data
     schedule: every 15 minutes synchronized
     timezone: Asia/Tokyo

@@ -39,7 +39,7 @@ func ImportCSVDataToDB(c *gin.Context) {
 	}
 }
 
-func ScrapNewsData(c *gin.Context) {
+func FetchNewsData(c *gin.Context) {
 	log.Println("Run service.ScrapNews")
-	service.ScrapNews()
+	service.FetchNewsData()
 }

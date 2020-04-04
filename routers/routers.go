@@ -31,7 +31,7 @@ func InitRouter() *gin.Engine {
 		cronRouter.Use(isAppEngineCron())
 		cronRouter.GET("/fetch_japanese_patient_csv", handler.FetchJapanesePatientCSV)
 		cronRouter.GET("/import_csv_data", handler.ImportCSVDataToDB)
-		cronRouter.GET("/scrap_news_data", handler.ScrapNewsData)
+		cronRouter.GET("/fetch_news_data", handler.FetchNewsData)
 	}
 	return r
 }

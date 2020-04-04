@@ -1,12 +1,19 @@
 package models
 
+import (
+	"github.com/jinzhu/gorm"
+	"time"
+)
+
 type PatientLocation struct {
+	gorm.Model
 	ID       int    `json: "id"`
 	Sum      int    `json: "sum"`
 	Location string `json: "patient_location"`
 }
 
 type PatientByDate struct {
+	gorm.Model
 	ID        int    `json: "id"`
 	Date      string `json: "date"`
 	Confirmed int    `json: "confirmed`
@@ -36,4 +43,10 @@ type DeadPatient struct {
 
 type LastUpdateTime struct {
 	PatientDataUpdateTime string `json: "patient_data_updated_time"`
+}
+
+func TransferToJSTTime(utcTime time.Time) time.Time {
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	jstTime := utcTime.UTC().In(jst)
+	return jstTime
 }
