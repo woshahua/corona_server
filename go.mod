@@ -3,6 +3,7 @@ module github.com/woshahua/corona_server
 go 1.12
 
 require (
+	github.com/GoogleCloudPlatform/cloudsql-proxy v0.0.0-20200325185443-f6b3391c52cf
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/carlescere/scheduler v0.0.0-20170109141437-ee74d2f83d82
 	github.com/gin-contrib/cors v1.3.1
@@ -11,9 +12,8 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joho/godotenv v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/lib/pq v1.3.0 // indirect
 	github.com/sclevine/agouti v3.0.0+incompatible // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
-	google.golang.org/appengine v1.4.0
+	google.golang.org/appengine v1.6.5
 	gopkg.in/ini.v1 v1.55.0 // indirect
 )

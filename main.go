@@ -23,8 +23,8 @@ func main() {
 	//go RunCronJob()
 	//s.ListenAndServe()
 
-	if !environment.IsAppEngine() {
-		if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./config/dev_credential.json"); err != nil {
+	if environment.IsProd() {
+		if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "./config/pro_credential.json"); err != nil {
 			log.Fatal(err)
 		}
 	}
