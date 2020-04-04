@@ -116,20 +116,20 @@ func GetPeriodPatientData() (*[]models.PatientByDate, error) {
 func InsertPatientByDate(person *models.PatientByDate) error {
 	conn, err = newConnection()
 	if err != nil { return err }
+
+	date := strings.Split(person.Date, "-")
+	person.Date = date[1] + "/" + date[2]
+
 	var patient models.PatientByDate
 	patient.Date = person.Date
 	var notExist = conn.Find(&patient, "date = ?", patient.Date).First(&patient).RecordNotFound()
 
 	if notExist {
-		date := strings.Split(person.Date, "-")
-		person.Date = date[1] + "." + date[2]
 		conn.NewRecord(person)
 		conn.Create(&person)
 		err := conn.Save(&person).Error
 		return err
 	} else {
-		patient = *person
-		date := strings.Split(person.Date, "-")
 		patient.Date = date[1] + "." + date[2]
 		err := conn.Save(&patient).Error
 		return err

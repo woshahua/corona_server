@@ -2,7 +2,7 @@ runtime: go112
 service: default
 
 env_variables:
-  BE_ENV: production
+  ENV: production
 
 handlers:
   - url: /.*
