@@ -1,0 +1,18 @@
+cron:
+  - description: "fetch_japanese_patient_csv"
+    target: default
+    url: /cron/fetch_japanese_patient_csv
+    schedule: every 3 hours synchronized
+    timezone: Asia/Tokyo
+
+  - description: "import_csv_data"
+    target: default
+    url: /cron/import_csv_data
+    schedule: every 12 hours synchronized
+    timezone: Asia/Tokyo
+
+  - description: "scrap_news_data"
+    target: default
+    url: /cron/scrap_news_data
+    schedule: every 15 minutes synchronized
+    timezone: Asia/Tokyo
