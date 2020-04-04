@@ -20,18 +20,21 @@ $ git clone https://github.com/woshahua/corona_server.git $GOPATH/src/github.com
 go mod download
 ```
 
-## docker setting
+## create local db
 ```
-docker run -d \
---name corona \
--p 5888:5432 \
--e POSTGRES_USER=woshahua \
--e POSTGRES_PASSWORD=woshahua \
--e POSTGRES_DB=corona \
-postgres
+初回は先にcoronaというdbを作る必要がある
+db/配下のsqlを使って必要なtableを作成
+```
+## localで起動
+```
+ENV=development go run main.go
 ```
 
-## run server 
+## 本番deploy
 ```
-go run main.go
+gcloud app deploy
+```
+## 本番cron task deploy
+```
+gcloud app deploy cron.yaml
 ```
