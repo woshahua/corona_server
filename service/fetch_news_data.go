@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -33,7 +32,7 @@ var apiKey = "7795afb75e204bdaaf761f709ce7c48f"
 var keyword = "コロナウィルス"
 
 func FetchNewsData() {
-	url := fmt.Sprintf("http://newsapi.org/v2/everything?q=%s&sortBy=publishedAt&apiKey=%s", keyword, apiKey)
+	url := "http://newsapi.org/v2/top-headlines?country=jp&q=コロナ&apiKey=7795afb75e204bdaaf761f709ce7c48f"
 
 	client := &http.Client{}
 
