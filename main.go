@@ -7,9 +7,9 @@ import (
 	"runtime"
 
 	"github.com/carlescere/scheduler"
-	"github.com/woshahua/corona_server/pkg/setting"
-	"github.com/woshahua/corona_server/routers"
-	"github.com/woshahua/corona_server/service"
+	"corona_server/pkg/setting"
+	"corona_server/routers"
+	"corona_server/service"
 )
 
 func main() {
@@ -41,6 +41,9 @@ func RunCronJob() {
 		url = "https://docs.google.com/spreadsheets/d/1jfB4muWkzKTR0daklmf8D5F0Uf_IYAgcx_-Ij9McClQ/export?format=csv&gid=1399411442"
 		err = service.DownLoadFile(filePath, url)
 
+		filePath = "staticFile/patientDetail.csv"
+		url = "https://docs.google.com/spreadsheets/d/10MFfRQTblbOpuvOs_yjIYgntpMGBg592dL8veXoPpp4/export?format=csv&gid=0"
+		err = service.DownLoadFile(filePath, url)
 		if err != nil {
 			log.Println("faild fetch csv file", err)
 		}
@@ -58,6 +61,7 @@ func RunCronJob() {
 		log.Println("Run service.fetchNews")
 		service.FetchNewsData()
 	}
+
 
 	// fetch newest japanese patient data from:
 	// https://toyokeizai.net/sp/visual/tko/covid19/csv/data.csv

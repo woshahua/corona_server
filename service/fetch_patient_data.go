@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/woshahua/corona_server/models"
+	"corona_server/models"
 )
 
 func Import() error {
