@@ -33,12 +33,7 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 	var notExist = db.Find(&patientDetail, "patient_detail.patient_number = ?", patientDetail.PatientNumber).First(&existed).RecordNotFound()
 
 	if notExist {
-		db.NewRecord(patientDetail)
-		db.Create(&patientDetail)
-		err := db.Save(&patientDetail).Error
-		return err
-	} else {
-		var residentAddress  = existed.ResidentPrefecture + existed.ResidentCity
+		var residentAddress  = patientDetail.ResidentPrefecture + patientDetail.ResidentCity
 		if residentAddress != "" {
 			geoInfo, err := library.GetGeoInfoFromAddress(context.Background(), residentAddress)
 			if err != nil { return  err }
@@ -46,11 +41,12 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 			patientDetail.Longitude = geoInfo.Geometry.Location.Lng
 			patientDetail.GeoHash = geohash.Encode(geoInfo.Geometry.Location.Lat, geoInfo.Geometry.Location.Lng)
 		}
-		updateData := map[string]interface{}{}
-		updateData["la"] = title
-		updateData["body"] = body
-		updateData["category"] = category
-		err := db.Update(&patientDetail).Error
+		db.NewRecord(patientDetail)
+		db.Create(&patientDetail)
+		err := db.Save(&patientDetail).Error
+		return err
+	} else {
+		err := db.Find(&patientDetail, "patient_detail.patient_number = ?", patientDetail.PatientNumber).Update(&patientDetail).Error
 		return err
 	}
 }
@@ -58,7 +54,5 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 func GetPatientDetail() (*[]PatientDetail, error) {
 	var patientDetails []PatientDetail
 	err := db.Find(&patientDetails).Error
-
-	print("?????????", patientDetails[0].GeoHash)
 	return &patientDetails, err
 }
