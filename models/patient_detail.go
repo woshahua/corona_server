@@ -6,7 +6,7 @@ import (
 
 type PatientDetail struct {
 	gorm.Model
-	PatientNumber          int `json: "patient_number"`
+	PatientNumber          int `gorm:"unique;not null"`
 	OfficialCode           string `json: "official_code"`
 	OnsetDate              string `json: "onset_date"`
 	ConfirmDate            string `json: "confirm_date"`
@@ -16,7 +16,6 @@ type PatientDetail struct {
 	ResidentCity           string `json: "resident_city"`
 	Age                    string `json: "age"`
 	Gender                 string `json: "gender"`
-	Status                 string `json: "status"`
 	IsDischarge            string `json: "is_discharge"`
 
 	Description            string `json: "description"`
@@ -35,4 +34,11 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 		err := db.Update(&patientDetail).Error
 		return err
 	}
+}
+
+func GetPatientDetail() (*[]PatientDetail, error) {
+	var patientDetails []PatientDetail
+	err := db.Find(&patientDetails).Error
+
+	return &patientDetails, err
 }

@@ -113,7 +113,6 @@ func InsertPatientDetail() error {
 			residentCity := line[10]
 			age := line[11]
 			gender := line[12]
-			status := line[15]
 			isDischarge := line[16]
 
 			description := line[18]
@@ -129,7 +128,6 @@ func InsertPatientDetail() error {
 				ResidentCity:residentCity,
 				Age:age,
 				Gender:gender,
-				Status:status,
 				IsDischarge: isDischarge,
 				Description: description,
 				ActionHistory:actionHistory}
