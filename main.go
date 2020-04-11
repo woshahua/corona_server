@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/carlescere/scheduler"
 	"corona_server/pkg/setting"
 	"corona_server/routers"
 	"corona_server/service"
+	"github.com/carlescere/scheduler"
 )
 
 func main() {

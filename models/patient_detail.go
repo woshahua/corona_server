@@ -30,7 +30,7 @@ type PatientDetail struct {
 
 func InsertPatientDetail(patientDetail *PatientDetail) error {
 	var existed PatientDetail
-	var notExist = db.Find(&patientDetail, "patient_detail.patient_number = ?", patientDetail.PatientNumber).First(&existed).RecordNotFound()
+	var notExist = db.Find(&existed, "patient_detail.patient_number = ?", patientDetail.PatientNumber).First(&existed).RecordNotFound()
 
 	if notExist {
 		var residentAddress  = patientDetail.ResidentPrefecture + patientDetail.ResidentCity
@@ -41,12 +41,10 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 			patientDetail.Longitude = geoInfo.Geometry.Location.Lng
 			patientDetail.GeoHash = geohash.Encode(geoInfo.Geometry.Location.Lat, geoInfo.Geometry.Location.Lng)
 		}
-		db.NewRecord(patientDetail)
-		db.Create(&patientDetail)
-		err := db.Save(&patientDetail).Error
+		err := db.Create(&patientDetail).Error
 		return err
 	} else {
-		err := db.Find(&patientDetail, "patient_detail.patient_number = ?", patientDetail.PatientNumber).Update(&patientDetail).Error
+		err := db.Find(&existed, "patient_detail.patient_number = ?", patientDetail.PatientNumber).Update(&patientDetail).Error
 		return err
 	}
 }
