@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"corona_server/models"
 	"corona_server/pkg/e"
+	"github.com/gin-gonic/gin"
 )
 
 func GetLastestUpdateTime(c *gin.Context) {
@@ -114,17 +114,3 @@ func GetPatientByLocation(c *gin.Context) {
 	})
 }
 
-func GetPatientDetails(c *gin.Context) {
-	data, err := models.GetPatientDetail()
-	code := e.SUCCESS
-	if err != nil {
-		code = e.ERROR
-		fmt.Println("failed fetch patients details: ", err)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
-}

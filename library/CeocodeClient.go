@@ -29,6 +29,10 @@ func GetGeoInfoFromAddress(ctx context.Context, residentAddress string) (maps.Ge
 	if err != nil {
 		return result, err
 	}
-	result = results[0]
-	return result, nil
+	if len(results) == 0 {
+		return  result, err
+	} else {
+		result = results[0]
+		return result, nil
+	}
 }
