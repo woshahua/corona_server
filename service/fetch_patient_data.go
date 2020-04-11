@@ -100,7 +100,7 @@ func InsertPatientDetail() error {
 
 	lines, err := csv.NewReader(f).ReadAll()
 	for i, line := range lines {
-		if i > 0 {
+		if i > 0 && i < 10{
 			number, err := strconv.Atoi(line[0])
 			if err != nil {
 				number = 0

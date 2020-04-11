@@ -55,6 +55,7 @@ func init() {
 	db.LogMode(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
+	print("!!!!!!!!!!!!!!!!!")
 	db.AutoMigrate(&News{}, &PatientByDate{}, &PatientLocation{}, &PatientDetail{})
 }
 
