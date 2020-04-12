@@ -23,6 +23,7 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	service.ImportLocationData()
 	// start a new routine
 	go RunCronJob()
 	s.ListenAndServe()
@@ -30,6 +31,8 @@ func main() {
 
 func RunCronJob() {
 	log.Println("starting...")
+	service.FetchPatientGlobalData()
+	service.FetchPatientDataByCountry()
 
 	fetchJapnesePatientCSV := func() {
 		log.Println("Run service.Import")
