@@ -65,7 +65,7 @@ func FetchNewsData() {
 
 	var newsList []models.News
 	now := models.TransferToJSTTime(time.Now())
-	// transfer parsed model to our original news model
+
 	for _, article := range news.Articles {
 		var news models.News
 
