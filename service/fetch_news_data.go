@@ -8,7 +8,7 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"corona_server/models"
+	"github.com/woshahua/corona_server/models"
 )
 
 type NewsData struct {

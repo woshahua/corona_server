@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"runtime"
 
-	"corona_server/pkg/setting"
-	"corona_server/routers"
-	"corona_server/service"
 	"github.com/carlescere/scheduler"
+	"github.com/woshahua/corona_server/pkg/setting"
+	"github.com/woshahua/corona_server/routers"
+	"github.com/woshahua/corona_server/service"
 )
 
 func main() {
@@ -64,7 +64,6 @@ func RunCronJob() {
 		log.Println("Run service.fetchNews")
 		service.FetchNewsData()
 	}
-
 
 	// fetch newest japanese patient data from:
 	// https://toyokeizai.net/sp/visual/tko/covid19/csv/data.csv

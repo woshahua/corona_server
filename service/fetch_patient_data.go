@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"corona_server/models"
+	"github.com/woshahua/corona_server/models"
 )
 
 func ImportLocationData() error {
@@ -157,18 +157,18 @@ func InsertPatientDetail() error {
 			actionHistory := line[20]
 
 			patientDetail := models.PatientDetail{
-				PatientNumber: number,
-				OfficialCode: officialCode,
-				OnsetDate:onsetDate,
-				ConfirmDate:confirmDate,
-				ConsultationPrefecture:consultationPrefecture,
-				ResidentPrefecture:residentPrefecture,
-				ResidentCity:residentCity,
-				Age:age,
-				Gender:gender,
-				IsDischarge: isDischarge,
-				Description: description,
-				ActionHistory:actionHistory}
+				PatientNumber:          number,
+				OfficialCode:           officialCode,
+				OnsetDate:              onsetDate,
+				ConfirmDate:            confirmDate,
+				ConsultationPrefecture: consultationPrefecture,
+				ResidentPrefecture:     residentPrefecture,
+				ResidentCity:           residentCity,
+				Age:                    age,
+				Gender:                 gender,
+				IsDischarge:            isDischarge,
+				Description:            description,
+				ActionHistory:          actionHistory}
 
 			models.InsertPatientDetail(&patientDetail)
 		}

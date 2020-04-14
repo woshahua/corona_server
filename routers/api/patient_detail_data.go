@@ -1,17 +1,19 @@
 package api
 
 import (
-	"corona_server/models"
 	"fmt"
+	"net/http"
+
+	"github.com/woshahua/corona_server/pkg/e"
+
 	"github.com/gin-gonic/gin"
 	"github.com/mmcloughlin/geohash"
-	"net/http"
-	"corona_server/pkg/e"
+	"github.com/woshahua/corona_server/models"
 )
 
 type LocationParams struct {
-	Lat    float64 `form:"lat"`
-	Lng    float64 `form:"lng"`
+	Lat float64 `form:"lat"`
+	Lng float64 `form:"lng"`
 }
 
 func GetPatientDetails(c *gin.Context) {

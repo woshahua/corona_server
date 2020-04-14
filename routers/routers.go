@@ -3,8 +3,8 @@ package routers
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"corona_server/pkg/setting"
-	"corona_server/routers/api"
+	"github.com/woshahua/corona_server/pkg/setting"
+	"github.com/woshahua/corona_server/routers/api"
 )
 
 func InitRouter() *gin.Engine {
