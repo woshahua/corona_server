@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 	"time"
@@ -8,10 +9,16 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type PeopleLocation struct {
+	gorm.Model
+	Sum      int
+	Location string
+}
 type PatientLocation struct {
 	gorm.Model
-	Sum      int    `json: "sum"`
-	Location string `json: "patient_location"`
+	Sum           int     `json: "sum"`
+	Location      string  `json: "patient_location"`
+	InfectionRate float32 `json: "infection_rate"`
 }
 
 type PatientByDate struct {
@@ -63,7 +70,7 @@ func GetLastUpdatedTime() (LastUpdateTime, error) {
 
 func GetLocationPatientData() (*[]PatientLocation, error) {
 	var location []PatientLocation
-	err := db.Order("sum desc").Limit(15).Find(&location).Error
+	err := db.Order("sum desc").Find(&location).Error
 
 	sort.SliceStable(location, func(i, j int) bool {
 		return location[i].Sum > location[j].Sum
@@ -153,7 +160,32 @@ func InsertPatientByDate(person *PatientByDate) error {
 func UpdatePatientByLocation(location *PatientLocation) error {
 	var locationData PatientLocation
 	locationData.Location = location.Location
+
+	peopleSum := PeopleLocation{}
+	peopleSum.Location = location.Location
+	db.Find(&peopleSum, "people_location.location = ?", peopleSum.Location).First(&peopleSum)
+	fmt.Println(peopleSum)
+
 	var notExist = db.Find(&locationData, "patient_location.location = ?", locationData.Location).First(&locationData).RecordNotFound()
+	if notExist {
+		location.InfectionRate = float32(location.Sum) / float32(peopleSum.Sum)
+		db.NewRecord(location)
+		db.Create(&location)
+		err := db.Save(&location).Error
+		return err
+	} else {
+		locationData.InfectionRate = float32(location.Sum) / float32(peopleSum.Sum)
+		locationData.Location = location.Location
+		locationData.Sum = location.Sum
+		db.Save(&locationData)
+		return nil
+	}
+}
+
+func InsertPeopleLocationSum(location *PeopleLocation) error {
+	var locationData PeopleLocation
+	locationData.Location = location.Location
+	var notExist = db.Find(&locationData, "people_location.location = ?", locationData.Location).First(&locationData).RecordNotFound()
 	if notExist {
 		db.NewRecord(location)
 		db.Create(&location)

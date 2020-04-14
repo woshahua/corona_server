@@ -25,6 +25,9 @@ func InitRouter() *gin.Engine {
 		apiv1.GET("/patient/latest", api.GetLatestPatient)
 		apiv1.GET("/patient/updateTime", api.GetLastestUpdateTime)
 		apiv1.GET("/patient/detail", api.GetPatientDetails)
+		apiv1.GET("/patient/global/current", api.GetCurrentGlobalData)
+		apiv1.GET("/patient/global/country", api.GetGlobalDataByCountry)
+		apiv1.GET("/patient/global/growth", api.GetGlobalDataGrowth)
 	}
 	return r
 }

@@ -3,12 +3,50 @@ package service
 import (
 	"encoding/csv"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"corona_server/models"
 )
+
+func ImportLocationData() error {
+	url := "https://docs.google.com/spreadsheets/d/1NQjppYx0QZQmt6706gCOw9DcIDxgnaEy9QTzfeqeMrQ/export?format=csv&gid=1940307536"
+	csvPath := "staticFile/peopleSumByLocation.csv"
+	err := DownLoadFile(csvPath, url)
+	if err != nil {
+		log.Println("failed fetch location csv file", err)
+	}
+
+	f, err := os.Open(csvPath)
+	defer f.Close()
+	if err != nil {
+		return err
+	}
+
+	lines, err := csv.NewReader(f).ReadAll()
+	if err != nil {
+		return err
+	}
+
+	for i, line := range lines {
+		if i > 0 {
+			line[4] = strings.Replace(line[4], ",", "", -1)
+			sum, err := strconv.Atoi(line[4])
+			if err != nil {
+				sum = 0
+			}
+			location := models.PeopleLocation{Sum: sum, Location: line[1]}
+			err = models.InsertPeopleLocationSum(&location)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
 
 func Import() error {
 	csvPath := "staticFile/patientByDate.csv"
