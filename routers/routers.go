@@ -3,8 +3,8 @@ package routers
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/woshahua/corona_server/pkg/setting"
-	"github.com/woshahua/corona_server/routers/api"
+	"corona_server/pkg/setting"
+	"corona_server/routers/api"
 )
 
 func InitRouter() *gin.Engine {
@@ -24,6 +24,7 @@ func InitRouter() *gin.Engine {
 		apiv1.GET("/patient/period", api.GetPeriodPatient)
 		apiv1.GET("/patient/latest", api.GetLatestPatient)
 		apiv1.GET("/patient/updateTime", api.GetLastestUpdateTime)
+		apiv1.GET("/patient/detail", api.GetPatientDetails)
 		apiv1.GET("/patient/global/current", api.GetCurrentGlobalData)
 		apiv1.GET("/patient/global/country", api.GetGlobalDataByCountry)
 		apiv1.GET("/patient/global/growth", api.GetGlobalDataGrowth)

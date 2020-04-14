@@ -8,7 +8,7 @@ import (
 	"time"
 
 	cache "github.com/patrickmn/go-cache"
-	"github.com/woshahua/corona_server/models"
+	"corona_server/models"
 )
 
 type NewsData struct {
@@ -64,6 +64,7 @@ func FetchNewsData() {
 	}
 
 	var newsList []models.News
+
 	now := models.TransferToJSTTime(time.Now())
 
 	for _, article := range news.Articles {

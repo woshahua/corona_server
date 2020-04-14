@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/woshahua/corona_server/models"
+	"corona_server/models"
 )
 
 func ImportLocationData() error {
@@ -118,6 +118,61 @@ func Import() error {
 		}
 	}
 
+	err = InsertPatientDetail()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func InsertPatientDetail() error {
+	csvPath := "staticFile/patientDetail.csv"
+	f, err := os.Open(csvPath)
+	defer f.Close()
+
+	if err != nil {
+		return err
+	}
+
+	lines, err := csv.NewReader(f).ReadAll()
+	for i, line := range lines {
+		if i > 0 {
+			number, err := strconv.Atoi(line[0])
+			if err != nil {
+				number = 0
+			}
+			officialCode := line[1]
+			onsetDate := line[3]
+			confirmDate := line[4]
+			consultationPrefecture := line[7]
+			residentPrefecture := line[9]
+			residentCity := line[10]
+			age := line[11]
+			gender := line[12]
+			isDischarge := line[16]
+
+			description := line[18]
+			actionHistory := line[20]
+
+			patientDetail := models.PatientDetail{
+				PatientNumber: number,
+				OfficialCode: officialCode,
+				OnsetDate:onsetDate,
+				ConfirmDate:confirmDate,
+				ConsultationPrefecture:consultationPrefecture,
+				ResidentPrefecture:residentPrefecture,
+				ResidentCity:residentCity,
+				Age:age,
+				Gender:gender,
+				IsDischarge: isDischarge,
+				Description: description,
+				ActionHistory:actionHistory}
+
+			models.InsertPatientDetail(&patientDetail)
+		}
+	}
 	return nil
 }
 

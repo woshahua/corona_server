@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/woshahua/corona_server/models"
-	"github.com/woshahua/corona_server/pkg/e"
-	"github.com/woshahua/corona_server/service"
+	"corona_server/models"
+	"corona_server/pkg/e"
+	"corona_server/service"
 )
 
 func GetNewsData(c *gin.Context) {

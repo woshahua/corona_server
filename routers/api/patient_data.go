@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"corona_server/models"
+	"corona_server/pkg/e"
 	"github.com/gin-gonic/gin"
-	"github.com/woshahua/corona_server/models"
-	"github.com/woshahua/corona_server/pkg/e"
 )
 
 func GetLastestUpdateTime(c *gin.Context) {
@@ -113,3 +113,4 @@ func GetPatientByLocation(c *gin.Context) {
 		"data": data,
 	})
 }
+
