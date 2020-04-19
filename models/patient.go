@@ -218,13 +218,21 @@ func UpdatePatientByLocation(location *PatientLocation) error {
 
 	var notExist = db.Find(&locationData, "patient_location.location = ?", locationData.Location).First(&locationData).RecordNotFound()
 	if notExist {
-		location.InfectionRate = float32(location.Sum) / float32(peopleSum.Sum)
+		if location.Sum == 0 {
+			location.InfectionRate = 0.0
+		} else {
+			location.InfectionRate = float32(location.Sum) / float32(peopleSum.Sum)
+		}
 		db.NewRecord(location)
 		db.Create(&location)
 		err := db.Save(&location).Error
 		return err
 	} else {
-		locationData.InfectionRate = float32(location.Sum) / float32(peopleSum.Sum)
+		if locationData.Sum == 0 {
+			locationData.InfectionRate = 0.0
+		} else {
+			locationData.InfectionRate = float32(location.Sum) / float32(peopleSum.Sum)
+		}
 		locationData.Location = location.Location
 		locationData.Sum = location.Sum
 		db.Save(&locationData)
