@@ -41,13 +41,17 @@ func RunCronJob() {
 		err := service.DownLoadFile(filePath, url)
 
 		filePath = "staticFile/patientByLocation.csv"
-
 		url = "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv&gid=428476519"
 		err = service.DownLoadFile(filePath, url)
 
 		filePath = "staticFile/patientDetail.csv"
 		url = "https://docs.google.com/spreadsheets/d/10MFfRQTblbOpuvOs_yjIYgntpMGBg592dL8veXoPpp4/export?format=csv&gid=0"
 		err = service.DownLoadFile(filePath, url)
+
+		filePath = "staticFile/patientTokyo.csv"
+		url = "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv&gid=303868583"
+		err = service.DownLoadFile(filePath, url)
+
 		if err != nil {
 			log.Println("faild fetch csv file", err)
 		}
@@ -68,10 +72,10 @@ func RunCronJob() {
 
 	// fetch newest japanese patient data from:
 	// https://toyokeizai.net/sp/visual/tko/covid19/csv/data.csv
-	scheduler.Every(3).Hours().Run(fetchJapnesePatientCSV)
+	scheduler.Every(1).Hours().Run(fetchJapnesePatientCSV)
 
 	// insert csv data to database evenry 6 hours
-	scheduler.Every(12).Hours().Run(importCSVDataToDB)
+	scheduler.Every(1).Hours().Run(importCSVDataToDB)
 
 	// scrap news data and import to database
 	scheduler.Every(15).Minutes().Run(scrapNewsData)

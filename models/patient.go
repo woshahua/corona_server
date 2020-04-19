@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 	"time"
@@ -23,14 +22,27 @@ type PatientLocation struct {
 
 type PatientByDate struct {
 	gorm.Model
-	Date      string `json: "date"`
-	Confirmed int    `json: "confirmed`
-	Recovered int    `json: "recovered`
-	Dead      int    `json: "dead`
-	Critical  int    `json: "critical`
-	Tested    int    `json: "tested"`
+	Date           string `json: "date"`
+	Confirmed      int    `json: "confirmed`
+	NewConfirmed   int    `json: "new_confirmed`
+	Recovered      int    `json: "recovered`
+	NewRecovered   int    `json: "new_recovered`
+	Dead           int    `json: "dead`
+	NewDead        int    `json: "new_dead`
+	Critical       int    `json: "critical`
+	NewCritical    int    `json: "new_critical`
+	Tested         int    `json: "tested"`
+	NewTested      int    `json: "new_tested"`
+	Symptomless    int    `json: "symptomless"`
+	NewSymptomless int    `json: "new_symptomless"`
 }
 
+type PatientTokyo struct {
+	gorm.Model
+	Sum        int    `json "sum"`
+	Location   string `json: "location"`
+	UpdateTime string `json: "update_time"`
+}
 type DailyPatient struct {
 	Date    string
 	Current int
@@ -80,10 +92,24 @@ func GetLocationPatientData() (*[]PatientLocation, error) {
 }
 
 func GetLatestPatientData() (*PatientByDate, error) {
-	var patient PatientByDate
+	var patient []PatientByDate
 
-	err := db.Order("id desc").Limit(1).Find(&patient).Error
-	return &patient, err
+	err := db.Order("id desc").Limit(2).Find(&patient).Error
+
+	var latestPatient PatientByDate
+	latestPatient.Confirmed = patient[0].Confirmed
+	latestPatient.Critical = patient[0].Critical
+	latestPatient.Symptomless = patient[0].Symptomless
+	latestPatient.Tested = patient[0].Tested
+	latestPatient.Dead = patient[0].Dead
+	latestPatient.Recovered = patient[0].Recovered
+	latestPatient.NewConfirmed = patient[0].Confirmed - patient[1].Confirmed
+	latestPatient.NewCritical = patient[0].Critical - patient[1].Critical
+	latestPatient.NewDead = patient[0].Dead - patient[1].Dead
+	latestPatient.NewRecovered = patient[0].Recovered - patient[1].Recovered
+	latestPatient.NewSymptomless = patient[0].Symptomless - patient[1].Symptomless
+	latestPatient.NewTested = patient[0].Tested - patient[1].Tested
+	return &latestPatient, err
 }
 
 func GetDailyPatientData() (*DailyPatient, error) {
@@ -133,6 +159,31 @@ func GetPeriodPatientData() (*[]PatientByDate, error) {
 	return &patient, err
 }
 
+func GetPatientTokyoData() ([]PatientTokyo, error) {
+	var tokyoLocationList []PatientTokyo
+	err := db.Find(&tokyoLocationList).Error
+
+	return tokyoLocationList, err
+}
+
+func InsertPatientTokyo(tokyoLocation *PatientTokyo) error {
+	var location PatientTokyo
+	location.Location = tokyoLocation.Location
+
+	notExist := db.Find(&location, "patient_tokyo.location = ?", location.Location).First(&location).RecordNotFound()
+	if notExist {
+		db.NewRecord(tokyoLocation)
+		db.Create(&tokyoLocation)
+		err := db.Save(&tokyoLocation).Error
+		return err
+	} else {
+		location.Sum = tokyoLocation.Sum
+		location.UpdateTime = tokyoLocation.UpdateTime
+		err := db.Save(&location).Error
+		return err
+	}
+}
+
 func InsertPatientByDate(person *PatientByDate) error {
 	var patient PatientByDate
 	date := strings.Split(person.Date, "-")
@@ -164,7 +215,6 @@ func UpdatePatientByLocation(location *PatientLocation) error {
 	peopleSum := PeopleLocation{}
 	peopleSum.Location = location.Location
 	db.Find(&peopleSum, "people_location.location = ?", peopleSum.Location).First(&peopleSum)
-	fmt.Println(peopleSum)
 
 	var notExist = db.Find(&locationData, "patient_location.location = ?", locationData.Location).First(&locationData).RecordNotFound()
 	if notExist {

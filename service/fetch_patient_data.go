@@ -85,13 +85,20 @@ func Import() error {
 				tested = 0
 			}
 
+			symptomless, err := strconv.Atoi(line[6])
+			if err != nil {
+				symptomless = 0
+			}
+
 			patient := models.PatientByDate{
-				Date:      line[0],
-				Confirmed: confirmed,
-				Recovered: recovered,
-				Dead:      dead,
-				Critical:  critical,
-				Tested:    tested}
+				Date:        line[0],
+				Confirmed:   confirmed,
+				Recovered:   recovered,
+				Dead:        dead,
+				Critical:    critical,
+				Tested:      tested,
+				Symptomless: symptomless,
+			}
 
 			models.InsertPatientByDate(&patient)
 		}
@@ -118,10 +125,35 @@ func Import() error {
 		}
 	}
 
+	// insert patient gis location data
 	err = InsertPatientDetail()
 
 	if err != nil {
 		return err
+	}
+
+	csvPath = "staticFile/patientTokyo.csv"
+	f, err = os.Open(csvPath)
+	defer f.Close()
+
+	if err != nil {
+		return err
+	}
+
+	var updateTime string
+	lines, err = csv.NewReader(f).ReadAll()
+	for _, line := range lines {
+		if line[0] != "updateTime" {
+			sum, err := strconv.Atoi(line[1])
+			if err != nil {
+				sum = 0
+			}
+
+			location := models.PatientTokyo{Sum: sum, Location: line[0], UpdateTime: updateTime}
+			models.InsertPatientTokyo(&location)
+		} else {
+			updateTime = line[1]
+		}
 	}
 
 	return nil
