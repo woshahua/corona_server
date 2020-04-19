@@ -13,7 +13,7 @@ import (
 )
 
 func ImportLocationData() error {
-	url := "https://docs.google.com/spreadsheets/d/1NQjppYx0QZQmt6706gCOw9DcIDxgnaEy9QTzfeqeMrQ/export?format=csv&gid=1940307536"
+	url := "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv&gid=428476519"
 	csvPath := "staticFile/peopleSumByLocation.csv"
 	err := DownLoadFile(csvPath, url)
 	if err != nil {
