@@ -13,7 +13,7 @@ import (
 )
 
 func ImportLocationData() error {
-	url := "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv&gid=428476519"
+	url := "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv&gid=47176127"
 	csvPath := "staticFile/peopleSumByLocation.csv"
 	err := DownLoadFile(csvPath, url)
 	if err != nil {
@@ -31,18 +31,16 @@ func ImportLocationData() error {
 		return err
 	}
 
-	for i, line := range lines {
-		if i > 0 {
-			line[4] = strings.Replace(line[4], ",", "", -1)
-			sum, err := strconv.Atoi(line[4])
-			if err != nil {
-				sum = 0
-			}
-			location := models.PeopleLocation{Sum: sum, Location: line[1]}
-			err = models.InsertPeopleLocationSum(&location)
-			if err != nil {
-				return err
-			}
+	for _, line := range lines {
+		line[4] = strings.Replace(line[4], ",", "", -1)
+		sum, err := strconv.Atoi(line[4])
+		if err != nil {
+			sum = 0
+		}
+		location := models.PeopleLocation{Sum: sum, Location: line[1]}
+		err = models.InsertPeopleLocationSum(&location)
+		if err != nil {
+			return err
 		}
 	}
 	return nil
