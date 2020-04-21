@@ -70,6 +70,11 @@ func RunCronJob() {
 		service.FetchNewsData()
 	}
 
+	fetchTopicData := func() {
+		log.Println("Run service.fetchTopic")
+		service.FetchTopicNewsData()
+	}
+
 	// fetch newest japanese patient data from:
 	// https://toyokeizai.net/sp/visual/tko/covid19/csv/data.csv
 	scheduler.Every(1).Hours().Run(fetchJapnesePatientCSV)
@@ -79,5 +84,6 @@ func RunCronJob() {
 
 	// scrap news data and import to database
 	scheduler.Every(15).Minutes().Run(scrapNewsData)
+	scheduler.Every(15).Minutes().Run(fetchTopicData)
 	runtime.Goexit()
 }

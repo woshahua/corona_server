@@ -27,3 +27,22 @@ func GetNewsData(c *gin.Context) {
 		"data": newsData,
 	})
 }
+
+func GetTopicData(c *gin.Context) {
+	code := e.SUCCESS
+
+	data, found := service.Cache.Get("topics")
+	var topics []service.Topic
+
+	if found {
+		topics = data.([]service.Topic)
+	} else {
+		fmt.Println("data not found")
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": topics,
+	})
+}

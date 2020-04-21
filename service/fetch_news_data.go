@@ -13,6 +13,10 @@ import (
 	"github.com/woshahua/corona_server/models"
 )
 
+type Topic struct {
+	Title string `json: "title"`
+	Body  string `json: "body"`
+}
 type NewsData struct {
 	Articles []Article `json: "articles"`
 }
@@ -88,4 +92,39 @@ func FetchNewsData() {
 	}
 
 	Cache.Set("news", newsList, cache.DefaultExpiration)
+}
+
+func FetchTopicNewsData() {
+	url := "https://api.github.com/repos/woshahua/issue_api/issues"
+
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		log.Fatal(res)
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var topics []Topic
+	err = json.Unmarshal(body, &topics)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	Cache.Set("topics", topics, cache.DefaultExpiration)
 }
