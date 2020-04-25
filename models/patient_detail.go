@@ -54,16 +54,16 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 	}
 }
 
-func GetAllPatientDetail() (*[]PatientDetail, error) {
-	var patientDetails []PatientDetail
-	err := db.Find(&patientDetails).Error
-	return &patientDetails, err
+func GetAllPatientDetail() ([]*PatientDetail, error) {
+	results := []*PatientDetail{}
+	err := db.Find(&results).Error
+	return results, err
 }
 
-func GetPatientDetailByGeoHash(geoHash string) (*[]PatientDetail, error) {
-	var patientDetails []PatientDetail
+func GetPatientDetailByGeoHash(geoHash string) ([]*PatientDetail, error) {
+	results := []*PatientDetail{}
 	searchGeo := geoHash[:3]
-	err := db.Where("geo_hash LIKE ?", searchGeo+"%").Find(&patientDetails).Error
+	err := db.Where("geo_hash LIKE ?", searchGeo+"%").Find(&results).Error
 
-	return &patientDetails, err
+	return results, err
 }
