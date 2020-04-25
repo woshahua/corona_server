@@ -1,7 +1,10 @@
 package service
 
 import (
+	"context"
 	"encoding/csv"
+	"github.com/mmcloughlin/geohash"
+	"github.com/woshahua/corona_server/library"
 	"io"
 	"log"
 	"net/http"
@@ -188,6 +191,28 @@ func InsertPatientDetail() error {
 			closeContact := line[21]
 			sourceLink := line[25]
 
+			lat := 0.0
+			lng := 0.0
+			geoHash := ""
+			var residentAddress = residentPrefecture + residentCity
+			if residentAddress != "" {
+				patientDetailLocation := models.FindByAddress(residentAddress)
+
+				if patientDetailLocation != nil {
+					lat = patientDetailLocation.Latitude
+					lng = patientDetailLocation.Longitude
+					geoHash = patientDetailLocation.GeoHash
+				} else {
+					geoInfo, err := library.GetGeoInfoFromAddress(context.Background(), residentAddress)
+					if err != nil {
+						return err
+					}
+					lat = geoInfo.Geometry.Location.Lat
+					lng = geoInfo.Geometry.Location.Lng
+					geoHash = geohash.Encode(geoInfo.Geometry.Location.Lat, geoInfo.Geometry.Location.Lng)
+					models.InsertPatientDetailLocation(&models.PatientDetailLocation{GeoHash:geoHash, Latitude: lat, Longitude: lng})
+				}
+			}
 
 			patientDetail := models.PatientDetail{
 				PatientNumber:          number,
@@ -203,6 +228,9 @@ func InsertPatientDetail() error {
 				Gender:                 gender,
 				IsDischarge:            isDischarge,
 				Description:            description,
+				Latitude:               lat,
+				Longitude:              lng,
+				GeoHash:                geoHash,
 				ActionHistory:          actionHistory}
 
 			models.InsertPatientDetail(&patientDetail)

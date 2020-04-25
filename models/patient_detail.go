@@ -1,11 +1,7 @@
 package models
 
 import (
-	"context"
-
 	"github.com/jinzhu/gorm"
-	"github.com/mmcloughlin/geohash"
-	"github.com/woshahua/corona_server/library"
 )
 
 type PatientDetail struct {
@@ -36,16 +32,6 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 	var notExist = db.Find(&existed, "patient_detail.patient_prefecture_code = ?", patientDetail.PatientPrefectureCode).First(&existed).RecordNotFound()
 
 	if notExist {
-		var residentAddress = patientDetail.ResidentPrefecture + patientDetail.ResidentCity
-		if residentAddress != "" {
-			geoInfo, err := library.GetGeoInfoFromAddress(context.Background(), residentAddress)
-			if err != nil {
-				return err
-			}
-			patientDetail.Latitude = geoInfo.Geometry.Location.Lat
-			patientDetail.Longitude = geoInfo.Geometry.Location.Lng
-			patientDetail.GeoHash = geohash.Encode(geoInfo.Geometry.Location.Lat, geoInfo.Geometry.Location.Lng)
-		}
 		err := db.Create(&patientDetail).Error
 		return err
 	} else {
