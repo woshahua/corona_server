@@ -173,7 +173,7 @@ func InsertPatientDetail() error {
 			if err != nil {
 				number = 0
 			}
-			officialCode := line[1]
+			prefectureCode := line[1]
 			onsetDate := line[3]
 			confirmDate := line[4]
 			consultationPrefecture := line[7]
@@ -185,15 +185,20 @@ func InsertPatientDetail() error {
 
 			description := line[18]
 			actionHistory := line[20]
+			closeContact := line[21]
+			sourceLink := line[25]
+
 
 			patientDetail := models.PatientDetail{
 				PatientNumber:          number,
-				OfficialCode:           officialCode,
+				PatientPrefectureCode:  prefectureCode,
 				OnsetDate:              onsetDate,
 				ConfirmDate:            confirmDate,
 				ConsultationPrefecture: consultationPrefecture,
 				ResidentPrefecture:     residentPrefecture,
 				ResidentCity:           residentCity,
+				CloseContact:           closeContact,
+				SourceLink:             sourceLink,
 				Age:                    age,
 				Gender:                 gender,
 				IsDischarge:            isDischarge,

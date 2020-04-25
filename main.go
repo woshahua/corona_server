@@ -23,9 +23,9 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	service.ImportLocationData()
+	//service.ImportLocationData()
 	// start a new routine
-	go RunCronJob()
+	//go RunCronJob()
 	s.ListenAndServe()
 }
 

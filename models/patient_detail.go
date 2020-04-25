@@ -11,7 +11,7 @@ import (
 type PatientDetail struct {
 	gorm.Model
 	PatientNumber          int    `gorm:"unique;not null"`
-	OfficialCode           string `json: "official_code"`
+	PatientPrefectureCode  string    `gorm:"unique;not null"`
 	OnsetDate              string `json: "onset_date"`
 	ConfirmDate            string `json: "confirm_date"`
 	ConsultationPrefecture string `json: "consultation_prefecture"`
@@ -21,6 +21,8 @@ type PatientDetail struct {
 	Age                string `json: "age"`
 	Gender             string `json: "gender"`
 	IsDischarge        string `json: "is_discharge"`
+	CloseContact       string `json: "close_contact"`
+	SourceLink         string `json: "source_link"`
 
 	Description   string  `json: "description"`
 	ActionHistory string  `json: "action_history"`
@@ -31,7 +33,7 @@ type PatientDetail struct {
 
 func InsertPatientDetail(patientDetail *PatientDetail) error {
 	var existed PatientDetail
-	var notExist = db.Find(&existed, "patient_detail.patient_number = ?", patientDetail.PatientNumber).First(&existed).RecordNotFound()
+	var notExist = db.Find(&existed, "patient_detail.patient_prefecture_code = ?", patientDetail.PatientPrefectureCode).First(&existed).RecordNotFound()
 
 	if notExist {
 		var residentAddress = patientDetail.ResidentPrefecture + patientDetail.ResidentCity
@@ -47,7 +49,7 @@ func InsertPatientDetail(patientDetail *PatientDetail) error {
 		err := db.Create(&patientDetail).Error
 		return err
 	} else {
-		err := db.Find(&existed, "patient_detail.patient_number = ?", patientDetail.PatientNumber).Update(&patientDetail).Error
+		err := db.Find(&existed, "patient_detail.patient_prefecture_code = ?", patientDetail.PatientPrefectureCode).Update(&patientDetail).Error
 		return err
 	}
 }
