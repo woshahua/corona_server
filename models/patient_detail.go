@@ -6,8 +6,8 @@ import (
 
 type PatientDetail struct {
 	gorm.Model
-	PatientNumber          int    `gorm:"unique;not null"`
-	PatientPrefectureCode  string    `gorm:"unique;not null"`
+	PatientNumber          int    `json: "patient_number"`
+	PatientPrefectureCode  string `gorm:"index:patient_prefecture_code;unique;not null"`
 	OnsetDate              string `json: "onset_date"`
 	ConfirmDate            string `json: "confirm_date"`
 	ConsultationPrefecture string `json: "consultation_prefecture"`
@@ -46,9 +46,9 @@ func GetAllPatientDetail() ([]*PatientDetail, error) {
 	return results, err
 }
 
-func GetPatientDetailByGeoHash(geoHash string) ([]*PatientDetail, error) {
+func GetPatientDetailByGeoHash(geoHash string, matchingNum int) ([]*PatientDetail, error) {
 	results := []*PatientDetail{}
-	searchGeo := geoHash[:3]
+	searchGeo := geoHash[:matchingNum]
 	err := db.Where("geo_hash LIKE ?", searchGeo+"%").Find(&results).Error
 
 	return results, err

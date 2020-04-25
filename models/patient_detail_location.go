@@ -1,7 +1,9 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type PatientDetailLocation struct {
-	//gorm.Model
+	gorm.Model
 	Latitude      float64 `json: "latitude"`
 	Longitude     float64 `json: "longitude"`
 	GeoHash       string  `json: "geo_hash"`

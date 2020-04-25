@@ -25,7 +25,10 @@ func GetPatientDetails(c *gin.Context) {
 	code := e.SUCCESS
 	if locationParams.Lat != 0 && locationParams.Lng != 0 {
 		geohash := geohash.Encode(locationParams.Lat, locationParams.Lng)
-		d, err := models.GetPatientDetailByGeoHash(geohash)
+		d, err := models.GetPatientDetailByGeoHash(geohash, 3)
+		if len(d) == 0 {
+			d, err = models.GetPatientDetailByGeoHash(geohash, 2)
+		}
 		data = d
 
 		code = e.SUCCESS

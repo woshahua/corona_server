@@ -176,7 +176,7 @@ func InsertPatientDetail() error {
 			if err != nil {
 				number = 0
 			}
-			prefectureCode := line[1]
+			prefectureCode := line[2]
 			onsetDate := line[3]
 			confirmDate := line[4]
 			consultationPrefecture := line[7]
