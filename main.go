@@ -31,8 +31,11 @@ func main() {
 
 func RunCronJob() {
 	log.Println("starting...")
-	service.FetchPatientGlobalData()
-	service.FetchPatientDataByCountry()
+
+	fetchGlobalData := func() {
+		service.FetchPatientGlobalData()
+		service.FetchPatientDataByCountry()
+	}
 
 	fetchJapnesePatientCSV := func() {
 		log.Println("Run service.Import")
@@ -85,5 +88,6 @@ func RunCronJob() {
 	// scrap news data and import to database
 	scheduler.Every(15).Minutes().Run(scrapNewsData)
 	scheduler.Every(15).Minutes().Run(fetchTopicData)
+	scheduler.Every(12).Hours().Run(fetchGlobalData)
 	runtime.Goexit()
 }
