@@ -150,13 +150,20 @@ func GetCurrentPatient() (*CurrentPatient, error) {
 
 func GetPeriodPatientData() (*[]PatientByDate, error) {
 	var patient []PatientByDate
-	err := db.Order("id desc").Limit(5).Find(&patient).Error
+	err := db.Order("id desc").Find(&patient).Error
 
-	sort.SliceStable(patient, func(i, j int) bool {
-		return patient[i].Date < patient[j].Date
+	var patientFiltered []PatientByDate
+	for _, data := range patient {
+		if data.Date > "02-26" {
+			patientFiltered = append(patientFiltered, data)
+		}
+	}
+
+	sort.SliceStable(patientFiltered, func(i, j int) bool {
+		return patientFiltered[i].Date < patientFiltered[j].Date
 	})
 
-	return &patient, err
+	return &patientFiltered, err
 }
 
 func GetPatientTokyoData() ([]PatientTokyo, error) {

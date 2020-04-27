@@ -124,7 +124,7 @@ func Import() error {
 	}
 
 	// insert patient gis location data
-	err = InsertPatientDetail()
+	// err = InsertPatientDetail()
 
 	if err != nil {
 		return err
