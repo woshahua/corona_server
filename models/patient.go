@@ -210,6 +210,7 @@ func InsertPatientByDate(person *PatientByDate) error {
 		patient.Dead = person.Dead
 		patient.Critical = person.Critical
 		patient.Tested = person.Tested
+		patient.Symptomless = person.Symptomless
 		err := db.Save(&patient).Error
 		return err
 	}
