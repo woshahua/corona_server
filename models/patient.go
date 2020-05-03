@@ -148,9 +148,15 @@ func GetCurrentPatient() (*CurrentPatient, error) {
 	return &currentPatient, err
 }
 
-func GetPeriodPatientData() (*[]PatientByDate, error) {
+func GetPeriodPatientData(number int) (*[]PatientByDate, error) {
 	var patient []PatientByDate
-	err := db.Order("id desc").Find(&patient).Error
+
+	var err error
+	if number == 20 || number == 0 {
+		err = db.Order("id desc").Find(&patient).Error
+	} else {
+		err = db.Order("id desc").Limit(number).Find(&patient).Error
+	}
 
 	var patientFiltered []PatientByDate
 	for _, data := range patient {

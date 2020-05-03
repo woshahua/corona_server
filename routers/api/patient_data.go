@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/woshahua/corona_server/models"
@@ -58,7 +59,12 @@ func GetLatestPatient(c *gin.Context) {
 }
 
 func GetPeriodPatient(c *gin.Context) {
-	data, err := models.GetPeriodPatientData()
+	numberQuery := c.Query("number")
+	number, err := strconv.Atoi(numberQuery)
+	if err != nil {
+		number = 0
+	}
+	data, err := models.GetPeriodPatientData(number)
 	code := e.SUCCESS
 	if err != nil {
 		code = e.ERROR
