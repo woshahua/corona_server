@@ -1,7 +1,10 @@
 package service
 
 import (
+	"context"
 	"encoding/csv"
+	"github.com/mmcloughlin/geohash"
+	"github.com/woshahua/corona_server/library"
 	"io"
 	"log"
 	"net/http"
@@ -173,7 +176,7 @@ func InsertPatientDetail() error {
 			if err != nil {
 				number = 0
 			}
-			officialCode := line[1]
+			prefectureCode := line[2]
 			onsetDate := line[3]
 			confirmDate := line[4]
 			consultationPrefecture := line[7]
@@ -185,19 +188,49 @@ func InsertPatientDetail() error {
 
 			description := line[18]
 			actionHistory := line[20]
+			closeContact := line[21]
+			sourceLink := line[25]
+
+			lat := 0.0
+			lng := 0.0
+			geoHash := ""
+			var residentAddress = residentPrefecture + residentCity
+			if residentAddress != "" {
+				patientDetailLocation := models.FindByAddress(residentAddress)
+
+				if patientDetailLocation != nil {
+					lat = patientDetailLocation.Latitude
+					lng = patientDetailLocation.Longitude
+					geoHash = patientDetailLocation.GeoHash
+				} else {
+					geoInfo, err := library.GetGeoInfoFromAddress(context.Background(), residentAddress)
+					if err != nil {
+						return err
+					}
+					lat = geoInfo.Geometry.Location.Lat
+					lng = geoInfo.Geometry.Location.Lng
+					geoHash = geohash.Encode(geoInfo.Geometry.Location.Lat, geoInfo.Geometry.Location.Lng)
+					models.InsertPatientDetailLocation(&models.PatientDetailLocation{GeoHash:geoHash, Latitude: lat, Longitude: lng})
+				}
+			}
 
 			patientDetail := models.PatientDetail{
 				PatientNumber:          number,
-				OfficialCode:           officialCode,
+				PatientPrefectureCode:  prefectureCode,
 				OnsetDate:              onsetDate,
 				ConfirmDate:            confirmDate,
 				ConsultationPrefecture: consultationPrefecture,
 				ResidentPrefecture:     residentPrefecture,
 				ResidentCity:           residentCity,
+				CloseContact:           closeContact,
+				SourceLink:             sourceLink,
 				Age:                    age,
 				Gender:                 gender,
 				IsDischarge:            isDischarge,
 				Description:            description,
+				Latitude:               lat,
+				Longitude:              lng,
+				GeoHash:                geoHash,
 				ActionHistory:          actionHistory}
 
 			models.InsertPatientDetail(&patientDetail)

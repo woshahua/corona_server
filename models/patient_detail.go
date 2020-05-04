@@ -1,17 +1,13 @@
 package models
 
 import (
-	"context"
-
 	"github.com/jinzhu/gorm"
-	"github.com/mmcloughlin/geohash"
-	"github.com/woshahua/corona_server/library"
 )
 
 type PatientDetail struct {
 	gorm.Model
-	PatientNumber          int    `gorm:"unique;not null"`
-	OfficialCode           string `json: "official_code"`
+	PatientNumber          int    `json: "patient_number"`
+	PatientPrefectureCode  string `gorm:"index:patient_prefecture_code;unique;not null"`
 	OnsetDate              string `json: "onset_date"`
 	ConfirmDate            string `json: "confirm_date"`
 	ConsultationPrefecture string `json: "consultation_prefecture"`
@@ -21,6 +17,8 @@ type PatientDetail struct {
 	Age                string `json: "age"`
 	Gender             string `json: "gender"`
 	IsDischarge        string `json: "is_discharge"`
+	CloseContact       string `json: "close_contact"`
+	SourceLink         string `json: "source_link"`
 
 	Description   string  `json: "description"`
 	ActionHistory string  `json: "action_history"`
@@ -31,37 +29,27 @@ type PatientDetail struct {
 
 func InsertPatientDetail(patientDetail *PatientDetail) error {
 	var existed PatientDetail
-	var notExist = db.Find(&existed, "patient_detail.patient_number = ?", patientDetail.PatientNumber).First(&existed).RecordNotFound()
+	var notExist = db.Find(&existed, "patient_detail.patient_prefecture_code = ?", patientDetail.PatientPrefectureCode).First(&existed).RecordNotFound()
 
 	if notExist {
-		var residentAddress = patientDetail.ResidentPrefecture + patientDetail.ResidentCity
-		if residentAddress != "" {
-			geoInfo, err := library.GetGeoInfoFromAddress(context.Background(), residentAddress)
-			if err != nil {
-				return err
-			}
-			patientDetail.Latitude = geoInfo.Geometry.Location.Lat
-			patientDetail.Longitude = geoInfo.Geometry.Location.Lng
-			patientDetail.GeoHash = geohash.Encode(geoInfo.Geometry.Location.Lat, geoInfo.Geometry.Location.Lng)
-		}
 		err := db.Create(&patientDetail).Error
 		return err
 	} else {
-		err := db.Find(&existed, "patient_detail.patient_number = ?", patientDetail.PatientNumber).Update(&patientDetail).Error
+		err := db.Find(&existed, "patient_detail.patient_prefecture_code = ?", patientDetail.PatientPrefectureCode).Update(&patientDetail).Error
 		return err
 	}
 }
 
-func GetAllPatientDetail() (*[]PatientDetail, error) {
-	var patientDetails []PatientDetail
-	err := db.Find(&patientDetails).Error
-	return &patientDetails, err
+func GetAllPatientDetail() ([]*PatientDetail, error) {
+	results := []*PatientDetail{}
+	err := db.Find(&results).Error
+	return results, err
 }
 
-func GetPatientDetailByGeoHash(geoHash string) (*[]PatientDetail, error) {
-	var patientDetails []PatientDetail
-	searchGeo := geoHash[:3]
-	err := db.Where("geo_hash LIKE ?", searchGeo+"%").Find(&patientDetails).Error
+func GetPatientDetailByGeoHash(geoHash string, matchingNum int) ([]*PatientDetail, error) {
+	results := []*PatientDetail{}
+	searchGeo := geoHash[:matchingNum]
+	err := db.Where("geo_hash LIKE ?", searchGeo+"%").Find(&results).Error
 
-	return &patientDetails, err
+	return results, err
 }
