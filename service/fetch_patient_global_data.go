@@ -6,7 +6,9 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
+	cache "github.com/patrickmn/go-cache"
 	"github.com/woshahua/corona_server/models"
 )
 
@@ -23,7 +25,7 @@ type PatientData struct {
 }
 
 type PatientDataJapan struct {
-	Date               string
+	Date               int
 	Pcr                int
 	Hospitalize        int
 	Positive           int
@@ -43,6 +45,8 @@ type PatientDataByCountry struct {
 	Recovered int    `json: "recovered"`
 	Active    int    `json: "active"`
 }
+
+var Cache = cache.New(time.Duration(-1), time.Duration(-1))
 
 func FetchPatientGlobalData() {
 	url := "https://covid2019-api.herokuapp.com/v2/total"
@@ -88,7 +92,7 @@ func FetchPatientGlobalData() {
 }
 
 func FetchPatientJapan() {
-	url := "https://covid19-japan-web-api.now.sh/api/v1/total"
+	url := "https://covid19-japan-web-api.now.sh/api/v1/total?history=true"
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -111,9 +115,28 @@ func FetchPatientJapan() {
 		log.Fatal(err)
 	}
 
-	var patient PatientDataJapan
-	err = json.Unmarshal(body, &patient)
-	log.Println(patient)
+	var patients []PatientDataJapan
+	err = json.Unmarshal(body, &patients)
+	var length = len(patients)
+	log.Println(length)
+
+	data := models.PatientByDate{}
+
+	data.Confirmed = patients[length-1].Positive
+	data.Critical = patients[length-1].Severe
+	data.Symptomless = patients[length-1].Symptom_confirming
+	data.Dead = patients[length-1].Death
+	data.Tested = patients[length-1].Pcr
+	data.Recovered = patients[length-1].Discharge
+
+	data.NewConfirmed = patients[length-1].Positive - patients[length-2].Positive
+	data.NewCritical = patients[length-1].Severe - patients[length-2].Severe
+	data.NewSymptomless = patients[length-1].Symptom_confirming - patients[length-2].Symptom_confirming
+	data.NewDead = patients[length-1].Death - patients[length-2].Death
+	data.NewTested = patients[length-1].Pcr - patients[length-2].Pcr
+	data.NewRecovered = patients[length-1].Discharge - patients[length-2].Discharge
+
+	Cache.Set("patientJapan", data, cache.DefaultExpiration)
 }
 
 func FetchPatientDataByCountry() {

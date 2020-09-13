@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/woshahua/corona_server/models"
 	"github.com/woshahua/corona_server/pkg/e"
+	"github.com/woshahua/corona_server/service"
 )
 
 func GetPatientTokyoData(c *gin.Context) {
@@ -28,33 +29,21 @@ func GetPatientTokyoData(c *gin.Context) {
 	})
 }
 
-func GetLastestUpdateTime(c *gin.Context) {
-	data, err := models.GetLastUpdatedTime()
-	code := e.SUCCESS
-	if err != nil {
-		code = e.ERROR
-		fmt.Print("failed ", err)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
-}
-
 func GetLatestPatient(c *gin.Context) {
-	data, err := models.GetLatestPatientData()
 	code := e.SUCCESS
-	if err != nil {
-		code = e.ERROR
-		fmt.Print("failed ", err)
+
+	data, found := service.Cache.Get("patientJapan")
+	var patient models.PatientByDate
+	if found {
+		patient = data.(models.PatientByDate)
+	} else {
+		fmt.Println("data not found")
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  e.GetMsg(code),
-		"data": data,
+		"data": patient,
 	})
 }
 
@@ -79,17 +68,20 @@ func GetPeriodPatient(c *gin.Context) {
 }
 
 func GetDailyPatient(c *gin.Context) {
-	data, err := models.GetDailyPatientData()
 	code := e.SUCCESS
-	if err != nil {
-		code = e.ERROR
-		fmt.Print("failed ", err)
+
+	data, found := service.Cache.Get("patientJapan")
+	var patient models.PatientByDate
+	if found {
+		patient = data.(models.PatientByDate)
+	} else {
+		fmt.Println("data not found")
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  e.GetMsg(code),
-		"data": data,
+		"data": patient,
 	})
 }
 

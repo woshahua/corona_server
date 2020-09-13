@@ -17,19 +17,15 @@ func InitRouter() *gin.Engine {
 	apiv1 := r.Group("api")
 	{
 		apiv1.GET("/patient/location", api.GetPatientByLocation)
-		apiv1.GET("/news", api.GetNewsData)
 		apiv1.GET("/patient/daily", api.GetDailyPatient)
 		apiv1.GET("/patient/dead", api.GetDeadPatient)
 		apiv1.GET("/patient/current", api.GetCurrentPatient)
 		apiv1.GET("/patient/period", api.GetPeriodPatient)
 		apiv1.GET("/patient/latest", api.GetLatestPatient)
-		apiv1.GET("/patient/updateTime", api.GetLastestUpdateTime)
-		apiv1.GET("/patient/detail", api.GetPatientDetails)
 		apiv1.GET("/patient/global/current", api.GetCurrentGlobalData)
 		apiv1.GET("/patient/global/country", api.GetGlobalDataByCountry)
 		apiv1.GET("/patient/global/growth", api.GetGlobalDataGrowth)
 		apiv1.GET("/patient/tokyo", api.GetPatientTokyoData)
-		apiv1.GET("/topics", api.GetTopicData)
 	}
 	return r
 }

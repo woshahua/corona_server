@@ -33,7 +33,6 @@ func RunCronJob() {
 	fetchGlobalData := func() {
 		service.FetchPatientGlobalData()
 		service.FetchPatientDataByCountry()
-		service.FetchPatientJapan()
 	}
 
 	fetchJapanData := func() {

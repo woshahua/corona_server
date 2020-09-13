@@ -61,25 +61,6 @@ type DeadPatient struct {
 	Diff    int
 }
 
-type LastUpdateTime struct {
-	PatientDataUpdateTime string `json: "patient_data_updated_time"`
-}
-
-func GetLastUpdatedTime() (LastUpdateTime, error) {
-	var location PatientLocation
-	var updatedOn LastUpdateTime
-	err := db.Find(&location).Last(&location).Error
-	updateTime := TransferToJSTTime(time.Now())
-	if err != nil {
-		updatedOn.PatientDataUpdateTime = updateTime.Format("2006/1/2 15:04:05")
-		return updatedOn, err
-	}
-
-	updateTime = TransferToJSTTime(location.UpdatedAt)
-	updatedOn.PatientDataUpdateTime = updateTime.Format("2006/1/2 15:04:05")
-	return updatedOn, nil
-}
-
 func GetLocationPatientData() (*[]PatientLocation, error) {
 	var location []PatientLocation
 	err := db.Order("sum desc").Find(&location).Error
