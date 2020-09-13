@@ -22,8 +22,6 @@ func main() {
 		WriteTimeout:   setting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
-
-	service.ImportLocationData()
 	// start a new routine
 	go RunCronJob()
 	s.ListenAndServe()
@@ -35,59 +33,15 @@ func RunCronJob() {
 	fetchGlobalData := func() {
 		service.FetchPatientGlobalData()
 		service.FetchPatientDataByCountry()
+		service.FetchPatientJapan()
 	}
 
-	fetchJapnesePatientCSV := func() {
-		log.Println("Run service.Import")
-		filePath := "staticFile/patientByDate.csv"
-		url := "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv#gid=0"
-		err := service.DownLoadFile(filePath, url)
-
-		filePath = "staticFile/patientByLocation.csv"
-		url = "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv&gid=428476519"
-		err = service.DownLoadFile(filePath, url)
-
-		filePath = "staticFile/patientDetail.csv"
-		url = "https://docs.google.com/spreadsheets/d/10MFfRQTblbOpuvOs_yjIYgntpMGBg592dL8veXoPpp4/export?format=csv&gid=0"
-		err = service.DownLoadFile(filePath, url)
-
-		filePath = "staticFile/patientTokyo.csv"
-		url = "https://docs.google.com/spreadsheets/d/1u7aBp8XmZA28Dn6mPo8QueRdVG2a5Bu_gTpAXkAilZw/export?format=csv&gid=303868583"
-		err = service.DownLoadFile(filePath, url)
-
-		if err != nil {
-			log.Println("faild fetch csv file", err)
-		}
+	fetchJapanData := func() {
+		service.FetchPatientJapan()
 	}
-
-	importCSVDataToDB := func() {
-		log.Println("Run service.Import")
-		err := service.Import()
-		if err != nil {
-			log.Println("failed import csv file: ", err)
-		}
-	}
-
-	scrapNewsData := func() {
-		log.Println("Run service.fetchNews")
-		service.FetchNewsData()
-	}
-
-	fetchTopicData := func() {
-		log.Println("Run service.fetchTopic")
-		service.FetchTopicNewsData()
-	}
-
-	// fetch newest japanese patient data from:
-	// https://toyokeizai.net/sp/visual/tko/covid19/csv/data.csv
-	scheduler.Every(1).Hours().Run(fetchJapnesePatientCSV)
-
-	// insert csv data to database evenry 6 hours
-	scheduler.Every(1).Hours().Run(importCSVDataToDB)
 
 	// scrap news data and import to database
-	scheduler.Every(15).Minutes().Run(scrapNewsData)
-	scheduler.Every(15).Minutes().Run(fetchTopicData)
 	scheduler.Every(12).Hours().Run(fetchGlobalData)
+	scheduler.Every(12).Hours().Run(fetchJapanData)
 	runtime.Goexit()
 }
